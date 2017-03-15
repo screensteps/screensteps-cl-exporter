@@ -4,31 +4,72 @@ import sys, getopt
 import requests
 import json
 
+# Define the help message here.
+def print_help():
+    print """
+    Usage:
+    run.py -n <site_name> -u <user_id> -p <token_password>
+    [-t <template_folder>]
+    [-o <output_folder>]
+    [-s <site_id>]
+    [-m <manual_id>]
+    [-a <article_id>]
+
+    Explanations:
+    -n This is used for the name of the site (http://<site_name>.screenstepslive.com)
+    -u Your user ID
+    -p Your API token or password
+    -t The folder with your templates (optional)
+    -o The folder you would like with outputs (optional)
+    -s If you'd like to only download one site, specify the ID here (optional)
+    -m If you'd like to only download one manual, specify the ID here (optional)
+    -a If you'd like to only download one article, specify the ID here (optional)
+
+    Examples:
+    run.py -n customerknowledge -u mikey -p mypassword -s 15226
+    run.py -n myaccount -u johnsmith -p notAgoodPassword -a 21234
+    """
+
 def main(argv):
     # Define variables we need.
-    site_name = 'customerknowledge' #n / name
-    user_id = 'mkarp' #u / user
-    api_token = 'silly' #p / password
+    site_name = '' #n / site_name
+    user_id = ''#u / user_id
+    api_token = ''#p / password
     template_folder = '' #t / template
     output_folder = '' #o / output
-    site_id = '15226' #s / site
-    manual_id = '58254' #m / manual
-    article_id = '612809' #a / article
+    site_id = ''#s / site
+    manual_id = ''#m / manual
+    article_id = ''#a / article
     try:
-        opts, args = getopt.getopt(argv,"hn:u:p:t:o:s:m:a:",["name=","user=","password=","template_folder=","output_folder=","site_id=","manual_id=","article_id="])
+        opts, args = getopt.getopt(argv,"hn:u:p:t:o:s:m:a:",["site_name=","user_id=","password=","template_folder=","output_folder=","site_id=","manual_id=","article_id="])
     except getopt.GetoptError:
-        print 'run.py -i <inputfile> -o <outputfile>'
+        print 'use "run.py -h" for help'
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'test.py -i <inputfile> -o <outputfile>'
+            print_help()
             sys.exit()
-        #elif opt in ("-i", "--ifile"):
-            #inputfile = arg
-        #elif opt in ("-o", "--ofile"):
-            #outputfile = arg
-    #print 'Input file is "', inputfile
-    #print 'Output file is "', outputfile
+        elif opt in ("-n", "--site_name"):
+            site_name = arg
+        elif opt in ("-u", "--user_id"):
+            user_id = arg
+        elif opt in ("-p", "--password"):
+            api_token = arg
+        elif opt in ("-t", "--template_folder"):
+            template_folder = arg
+        elif opt in ("-o", "--output_folder"):
+            output_folder = arg
+        elif opt in ("-s", "--site_id"):
+            site_id = arg
+        elif opt in ("-m", "--manual_id"):
+            manual_id = arg
+        elif opt in ("-a", "--article_id"):
+            article_id = arg
+
+    # check if required attributes exist
+    if (site_name == '') or (user_id == '') or (api_token == ''):
+        print("Site_name, user_id, and password are required.")
+        sys.exit()
 
     # set up request
     def screensteps(endpoint):
