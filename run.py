@@ -83,7 +83,7 @@ def main(argv):
                 print 'Error connecting to server (' + str(r.status_code) + ')'
                 sys.exit(2)
         except requests.exceptions.RequestException:
-            print 'Error connecting to server (' + str(r.status_code) + ')'
+            print 'Error connecting to server.'
             sys.exit(2)
 
     # grab all sites for that user information
