@@ -7,8 +7,29 @@ missing module named riscos - imported by os
 missing module named ce - imported by os
 missing module named _emx_link - imported by os
 missing module named os2 - imported by os
-missing module named pwd - imported by posixpath
+missing module named pwd - imported by posixpath, getpass, netrc
 missing module named posix - imported by os
 missing module named resource - imported by posix
 missing module named org - imported by copy
-missing module named requests - imported by C:\Users\mike\Documents\GitHub\commandline\run.py
+missing module named 'urllib.request' - imported by requests.compat
+missing module named 'urllib.parse' - imported by requests.compat
+missing module named 'requests.packages.urllib3.packages.six.moves' - imported by requests.packages.urllib3.exceptions, requests.packages.urllib3.connectionpool, requests.packages.urllib3.connection, requests.packages.urllib3.util.response, requests.packages.urllib3.request, requests.packages.urllib3.response, requests.packages.urllib3.poolmanager
+missing module named _dummy_threading - imported by dummy_threading
+missing module named ipaddress - imported by requests.packages.urllib3.packages.ssl_match_hostname._implementation
+missing module named backports - imported by requests.packages.urllib3.packages.ssl_match_hostname
+missing module named SOCKS - imported by ftplib
+missing module named _scproxy - imported by urllib
+missing module named EasyDialogs - imported by getpass
+missing module named termios - imported by getpass
+missing module named rourl2path - imported by urllib
+missing module named simplejson - imported by requests.compat
+missing module named chardet - imported by requests.packages
+missing module named urllib3 - imported by requests.packages
+missing module named socks - imported by requests.packages.urllib3.contrib.socks
+missing module named idna - imported by requests.packages.urllib3.contrib.pyopenssl, requests.models
+missing module named certifi - imported by requests.certs
+missing module named 'OpenSSL.crypto' - imported by requests.packages.urllib3.contrib.pyopenssl
+missing module named 'cryptography.x509' - imported by requests.packages.urllib3.contrib.pyopenssl
+missing module named 'cryptography.hazmat' - imported by requests.packages.urllib3.contrib.pyopenssl
+missing module named cryptography - imported by requests.packages.urllib3.contrib.pyopenssl
+missing module named OpenSSL - imported by requests.packages.urllib3.contrib.pyopenssl
