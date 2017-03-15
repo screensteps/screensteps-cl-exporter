@@ -1,0 +1,39 @@
+missing module named _sha512 - imported by hashlib
+missing module named _sha256 - imported by hashlib
+missing module named _md5 - imported by hashlib
+missing module named _sha - imported by hashlib
+missing module named 'org.python' - imported by pickle
+missing module named _subprocess - imported by subprocess
+missing module named msvcrt - imported by subprocess, getpass
+missing module named riscosenviron - imported by os
+missing module named riscospath - imported by os
+missing module named riscos - imported by os
+missing module named ce - imported by os
+missing module named _emx_link - imported by os
+missing module named os2 - imported by os
+missing module named nt - imported by os, ntpath
+missing module named org - imported by copy
+missing module named 'http.cookies' - imported by requests.compat
+missing module named http - imported by requests.packages.urllib3.connection, requests.compat
+missing module named 'urllib.request' - imported by requests.compat
+missing module named 'urllib.parse' - imported by requests.packages.urllib3.request, requests.packages.urllib3.poolmanager, requests.compat
+missing module named 'requests.packages.urllib3.packages.six.moves' - imported by requests.packages.urllib3.util.response, requests.packages.urllib3.response
+missing module named 'http.client' - imported by requests.packages.urllib3.connection
+missing module named _winreg - imported by mimetypes, urllib
+missing module named netbios - imported by uuid
+missing module named win32wnet - imported by uuid
+missing module named _dummy_threading - imported by dummy_threading
+missing module named queue - imported by requests.packages.urllib3.connectionpool
+missing module named 'backports.ssl_match_hostname' - imported by requests.packages.urllib3.packages.ssl_match_hostname
+missing module named SOCKS - imported by ftplib
+missing module named OverrideFrom23 - imported by Carbon.Res
+missing module named rourl2path - imported by urllib
+missing module named simplejson - imported by requests.compat
+missing module named chardet - imported by requests.packages
+missing module named urllib3 - imported by requests.packages
+missing module named socks - imported by requests.packages.urllib3.contrib.socks
+missing module named certifi - imported by requests.certs
+missing module named 'urllib3.packages' - imported by requests.packages.urllib3.contrib.pyopenssl
+missing module named OpenSSL - imported by requests.packages.urllib3.contrib.pyopenssl
+missing module named 'ndg.httpsclient' - imported by requests.packages.urllib3.contrib.pyopenssl
+missing module named ndg - imported by requests.packages.urllib3.contrib.pyopenssl
