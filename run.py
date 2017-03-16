@@ -37,13 +37,14 @@ def make_dir(directory):
         os.makedirs(directory)
 
 def download_file(directory, url):
-    local_filename = directory + '/' + url.split('/')[-1].split('?')[0]
+    short_path = url.split('/')[-1].split('?')[0]
+    local_filename = directory + '/' + short_path
     r = requests.get(url, stream=True)
     with open(local_filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)
-    return local_filename
+    return short_path
 
 def write_file(directory, name, rawtext):
     with open(os.path.join(directory, name), 'w+') as f:
@@ -169,12 +170,16 @@ def main(argv):
 
                                 for content_block in this_article['article']['content_blocks']:
                                     if content_block['url'] is not None:
-                                        print(">>>>>> Processing file: " + content_block['url'])
-                                        new_file_path = download_file(article_folder,content_block['url'])
-                                        new_html = new_html.replace(str(content_block['url']),str(new_file_path))
+                                        # folder for files
+                                        files_folder = os.path.join(article_folder, 'files')
+                                        make_dir(files_folder)
 
-                                write_file(article_folder, 'raw_html', article_html)
-                                write_file(article_folder, 'modified_html', new_html)
+                                        print(">>>>>> Processing file: " + content_block['url'])
+                                        new_file_path = download_file(files_folder,content_block['url'])
+                                        new_html = new_html.replace(str(content_block['url']),('files/' + str(new_file_path)))
+
+                                write_file(article_folder, 'raw.html', article_html)
+                                write_file(article_folder, 'modified.html', new_html)
 
 
 if __name__ == "__main__":
