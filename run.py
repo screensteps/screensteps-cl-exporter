@@ -313,7 +313,8 @@ def main(argv):
 
                                         # find and replace all the other handlebars specified
                                         for article_handlebar in article_handlebars:
-                                            temp_towrite = temp_towrite.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
+                                            if article_handlebar != "link":
+                                                temp_towrite = temp_towrite.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
 
                                         # write file
                                         write_file(article_folder, temp_filename, temp_towrite)
@@ -348,12 +349,12 @@ def main(argv):
                             temp_filename = this_manual_id + os.path.splitext(path)[1]
                             write_file(site_folder, temp_filename, ''.join(manual_files_temp[path]))
 
-    # clean up the "@" files that we copied over for each site
-    if template_specified:
-        site_article_folder = os.path.join(site_folder, '@article')
-        shutil.rmtree(site_article_folder)
-        remove_found_files(find_file(article_file_indicator,site_folder))
-        remove_found_files(find_file(manual_file_indicator,site_folder))
+        # clean up the "@" files that we copied over for each site
+        if template_specified:
+            site_article_folder = os.path.join(site_folder, '@article')
+            shutil.rmtree(site_article_folder)
+            remove_found_files(find_file(article_file_indicator,site_folder))
+            remove_found_files(find_file(manual_file_indicator,site_folder))
 
 
 if __name__ == "__main__":
