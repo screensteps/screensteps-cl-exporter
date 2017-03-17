@@ -3,8 +3,13 @@
 import sys, getopt
 import requests
 import json
-import os
+import os, fnmatch
 import re
+import shutil
+
+# globals
+article_file_indicator = '@article.*'
+manual_file_indicator = '@manual.*'
 
 # Define the help message here.
 def print_help():
@@ -46,9 +51,26 @@ def download_file(directory, url):
                 f.write(chunk)
     return short_path
 
+def find_file(pattern, path):
+    result = []
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            if fnmatch.fnmatch(name, pattern):
+                result.append(os.path.join(root, name))
+    return result
+
+def remove_found_files(files):
+    for name in files:
+        os.remove(name)
+
 def write_file(directory, name, rawtext):
     with open(os.path.join(directory, name), 'w+') as f:
         f.write(rawtext.encode('utf-8'))
+
+def copy_and_overwrite(from_path, to_path):
+    if os.path.exists(to_path):
+        shutil.rmtree(to_path)
+    shutil.copytree(from_path, to_path)
 
 def main(argv):
     # Define variables we need.
@@ -91,8 +113,54 @@ def main(argv):
         print("Site_name, user_id, and password are required. Try 'run -h' if you need help.")
         sys.exit()
 
+    # if the output isn't specified, just put it in their home directory
     if (output_folder == ''):
         output_folder = os.path.expanduser('~')
+
+    # if the template folder isn't specified, we'll just print out html files, otherwise we
+    # have some prep work to do.
+    if (template_folder == ''):
+        template_specified = False
+        print("Warn: Template folder not specified.  Will output HTML files only.")
+    else:
+        # check if template folder exists
+        if os.path.exists(template_folder):
+            template_specified = True
+
+            # check if folder has an @article folder
+            at_article_folder = os.path.join(template_folder, '@article')
+            if os.path.exists(at_article_folder):
+                print("Info: Template folder has @article folder.")
+
+                # now let's see if there are @article file(s). we'll take as many
+                # as you want, as long as there is at least one!
+                at_article_file = find_file(article_file_indicator,at_article_folder)
+
+                if at_article_file == []:
+                    print("Error: No @article file found.")
+                    sys.exit()
+
+                # ok, phew we found at least one
+                else:
+                    print("Info: @article file(s) found.")
+
+            # no @article folder, that's a deal killer
+            else:
+                print("Error: Template folder did not have an @article folder.")
+                sys.exit()
+
+            # now let's check if theres a manual file
+            at_manual_file = find_file(manual_file_indicator,template_folder)
+
+            if at_manual_file == []:
+                print("Warn: No @manual file found.")
+            else:
+                print("Info: @manual file(s) found.")
+
+        # template folder didn't exist
+        else:
+            print("Error: Template folder not found. Try 'run -h' if you need help.")
+            sys.exit()
 
     # set up request
     def screensteps(endpoint):
@@ -121,9 +189,12 @@ def main(argv):
             print(">> Processing site: " + site['title'])
             print(">> " + str(site))
 
-            # folder for site
+            # folder for site - two paths 1) template folder, 2) no template folder
             site_folder = os.path.join(output_folder, this_site_id)
-            make_dir(site_folder)
+            if template_specified:
+                copy_and_overwrite(template_folder, site_folder)
+            else:
+                make_dir(site_folder)
 
             manuals = screensteps('sites/' + this_site_id) #grab manuals
 
@@ -134,10 +205,6 @@ def main(argv):
                     print(">>> Processing manual: " + manual['title'])
                     print(">>> " + str(manual))
 
-                    # folder for manual
-                    manual_folder = os.path.join(site_folder, this_manual_id)
-                    make_dir(manual_folder)
-
                     chapters = screensteps('sites/' + this_site_id + '/manuals/' + this_manual_id) # grab chapters
 
                     # loop through chapters
@@ -145,10 +212,6 @@ def main(argv):
                         this_chapter_id = str(chapter['id'])
                         print(">>>> Processing chapter: " + chapter['title'])
                         print(">>>> " + str(chapter))
-
-                        # folder for chapter
-                        chapter_folder = os.path.join(manual_folder, this_chapter_id)
-                        make_dir(chapter_folder)
 
                         articles = screensteps('sites/' + this_site_id + '/chapters/' + this_chapter_id) # grab articles
 
@@ -159,9 +222,12 @@ def main(argv):
                                 print(">>>>> Processing article: " + article['title'])
                                 print(">>>>> " + str(article))
 
-                                # folder for article
-                                article_folder = os.path.join(chapter_folder, this_article_id)
-                                make_dir(article_folder)
+                                # folder for article - two paths 1) template folder, 2) no template folder
+                                article_folder = os.path.join(site_folder, this_article_id)
+                                if template_specified:
+                                    copy_and_overwrite(at_article_folder, article_folder)
+                                else:
+                                    make_dir(article_folder)
 
                                 this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
 
@@ -178,8 +244,15 @@ def main(argv):
                                         new_file_path = download_file(files_folder,content_block['url'])
                                         new_html = new_html.replace(str(content_block['url']),('files/' + str(new_file_path)))
 
-                                write_file(article_folder, 'raw.html', article_html)
-                                write_file(article_folder, 'modified.html', new_html)
+                                #write_file(site_folder, 'raw.html', article_html)
+                                write_file(article_folder, (this_article_id + '.html'), new_html)
+
+    # clean up the "@" files that we copied over for each site
+    if template_specified:
+        site_article_folder = os.path.join(site_folder, '@article')
+        shutil.rmtree(site_article_folder)
+        remove_found_files(find_file(article_file_indicator,site_folder))
+        remove_found_files(find_file(manual_file_indicator,site_folder))
 
 
 if __name__ == "__main__":
