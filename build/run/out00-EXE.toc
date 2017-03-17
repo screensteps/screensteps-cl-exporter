@@ -54,6 +54,7 @@
   ('pywintypes27.dll',
    'c:\\python27\\lib\\site-packages\\pywin32_system32\\pywintypes27.dll',
    'BINARY'),
+  ('Include\\pyconfig.h', 'c:\\python27\\Include\\pyconfig.h', 'DATA'),
   ('requests\\cacert.pem',
    'c:\\python27\\lib\\site-packages\\requests\\cacert.pem',
    'DATA'),
@@ -64,7 +65,7 @@
  [],
  False,
  False,
- 1489695085L,
+ 1489791756L,
  [('run.exe',
    'c:\\python27\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\run.exe',
    'EXECUTABLE')])

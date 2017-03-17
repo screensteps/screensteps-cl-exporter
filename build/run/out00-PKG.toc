@@ -51,6 +51,7 @@
   ('pywintypes27.dll',
    'c:\\python27\\lib\\site-packages\\pywin32_system32\\pywintypes27.dll',
    'BINARY'),
+  ('Include\\pyconfig.h', 'c:\\python27\\Include\\pyconfig.h', 'DATA'),
   ('requests\\cacert.pem',
    'c:\\python27\\lib\\site-packages\\requests\\cacert.pem',
    'DATA'),
