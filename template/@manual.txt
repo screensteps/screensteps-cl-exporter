@@ -1,0 +1,8 @@
+{{title}}
+{{chapter}}
+  Title: {{title}}
+  {{article}}
+    -> {{link}}: {{title}}
+    [{{meta_description}}]
+  {{article}}
+{{chapter}}
