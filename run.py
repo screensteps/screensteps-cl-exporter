@@ -11,6 +11,24 @@ import shutil
 article_file_indicator = '@article.*'
 manual_file_indicator = '@manual.*'
 
+# these are the handlebars you can use in an article file
+article_handlebars = [
+    "id",
+    "title",
+    "manual_id",
+    "chapter_id",
+    "last_edited_by",
+    "last_edited_at",
+    "meta_title",
+    "meta_description",
+    "meta_search",
+    "created_at"]
+
+# these are the handlebars you can use in manual file
+# {{title}} outside of any blocks for manual title
+# {{chapter}} to start and end the chapter, then {{title}} in the block
+# {{article}} to start and end the manual, then {{title}} and {{link}} in the block
+
 # Define the help message here.
 def print_help():
     print """
@@ -71,6 +89,11 @@ def copy_and_overwrite(from_path, to_path):
     if os.path.exists(to_path):
         shutil.rmtree(to_path)
     shutil.copytree(from_path, to_path)
+
+def read_file(path):
+    with open(path) as f:
+        contents = f.read()
+    return contents
 
 def main(argv):
     # Define variables we need.
@@ -144,6 +167,11 @@ def main(argv):
                 else:
                     print("Info: @article file(s) found.")
 
+                    # read in template data
+                    article_files = {}
+                    for each_article_file in at_article_file:
+                        article_files[each_article_file] = read_file(each_article_file)
+
             # no @article folder, that's a deal killer
             else:
                 print("Error: Template folder did not have an @article folder.")
@@ -154,8 +182,27 @@ def main(argv):
 
             if at_manual_file == []:
                 print("Warn: No @manual file found.")
+                is_manual_files = False
             else:
                 print("Info: @manual file(s) found.")
+                is_manual_files = True
+
+                # read in template data
+                manual_files = {}
+                manual_files_ref = {}
+                for each_manual_file in at_manual_file:
+                    manual_files[each_manual_file] = read_file(each_manual_file)
+
+                    # Each @manual file consists of pre-chapter block, chapter block, and post-chapter block
+                    # the chapter block then consists of the pre-article block, the article block, and post-article block
+                    chapter_split = re.split('{{chapter}}',manual_files[each_manual_file])
+                    article_split = re.split('{{article}}',chapter_split[1])
+                    manual_files_ref[each_manual_file] = [
+                                                chapter_split[0], # 0 - pre-chapter
+                                                article_split[0], # 1 - pre-article (chapter)
+                                                article_split[1], # 2 - article
+                                                article_split[2], # 3 - post-article (chapter)
+                                                chapter_split[2]] # 4 - post-chapter
 
         # template folder didn't exist
         else:
@@ -207,11 +254,23 @@ def main(argv):
 
                     chapters = screensteps('sites/' + this_site_id + '/manuals/' + this_manual_id) # grab chapters
 
+                    # pre-chapter replaces on str(manual_files_ref[path][0])
+                    if is_manual_files: # are there templates?
+                        manual_files_temp = {}
+                        for path, details in manual_files.iteritems():
+                            manual_files_temp[path] = []
+                            manual_files_temp[path].append(str(manual_files_ref[path][0]).replace('{{title}}',chapters['manual']['title']))
+
                     # loop through chapters
                     for chapter in chapters['manual']['chapters']:
                         this_chapter_id = str(chapter['id'])
                         print(">>>> Processing chapter: " + chapter['title'])
                         print(">>>> " + str(chapter))
+
+                        # pre-article replaces on str(manual_files_ref[path][1])
+                        if is_manual_files: # are there templates?
+                            for path, details in manual_files.iteritems():
+                                manual_files_temp[path].append(str(manual_files_ref[path][1]).replace('{{title}}',str(chapter['title'])))
 
                         articles = screensteps('sites/' + this_site_id + '/chapters/' + this_chapter_id) # grab articles
 
@@ -244,8 +303,50 @@ def main(argv):
                                         new_file_path = download_file(files_folder,content_block['url'])
                                         new_html = new_html.replace(str(content_block['url']),('files/' + str(new_file_path)))
 
-                                #write_file(site_folder, 'raw.html', article_html)
-                                write_file(article_folder, (this_article_id + '.html'), new_html)
+                                if template_specified:
+                                    # step through each file that starts with "@article"
+                                    for path, temp_html in article_files.iteritems():
+                                        temp_filename = this_article_id + os.path.splitext(path)[1]
+
+                                        # find and replace {{html}}
+                                        temp_towrite = temp_html.replace("""{{html}}""",article_html)
+
+                                        # find and replace all the other handlebars specified
+                                        for article_handlebar in article_handlebars:
+                                            temp_towrite = temp_towrite.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
+
+                                        # write file
+                                        write_file(article_folder, temp_filename, temp_towrite)
+                                else:
+                                    # write html to a file if no templates
+                                    write_file(article_folder, (this_article_id + '.html'), new_html)
+
+                                # article replaces on str(manual_files_ref[path][2])
+                                if is_manual_files: # are there templates?
+                                    article_handlebars.append("link")
+
+                                    for path, details in manual_files.iteritems():
+                                        article_string = str(manual_files_ref[path][2])
+                                        for article_handlebar in article_handlebars:
+                                            if article_handlebar == "link":
+                                                article_string = article_string.replace(("{{" + str(article_handlebar) + "}}"), this_article_id + '/' + this_article_id + os.path.splitext(path)[1] )
+                                            else:
+                                                article_string = article_string.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
+                                        manual_files_temp[path].append(article_string)
+
+                        # post-article replaces on str(manual_files_ref[path][3])
+                        if is_manual_files: # are there templates?
+                            for path, details in manual_files.iteritems():
+                                manual_files_temp[path].append(str(manual_files_ref[path][3]).replace('{{title}}',str(chapter['title'])))
+
+                    # post-chapter replaces on str(manual_files_ref[path][4])
+                    if is_manual_files: # are there templates?
+                        for path, details in manual_files.iteritems():
+                            manual_files_temp[path].append(str(manual_files_ref[path][4]).replace('{{title}}',chapters['manual']['title']))
+
+                            # dump files
+                            temp_filename = this_manual_id + os.path.splitext(path)[1]
+                            write_file(site_folder, temp_filename, ''.join(manual_files_temp[path]))
 
     # clean up the "@" files that we copied over for each site
     if template_specified:
