@@ -144,6 +144,7 @@ def main(argv):
     # have some prep work to do.
     if (template_folder == ''):
         template_specified = False
+        is_manual_files = False
         print("Warn: Template folder not specified.  Will output HTML files only.")
     else:
         # check if template folder exists
