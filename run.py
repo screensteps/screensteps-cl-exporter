@@ -9,7 +9,7 @@ import shutil
 
 # globals
 article_file_indicator = '@article.*'
-manual_file_indicator = '@manual.*'
+manual_file_indicator = '@toc.*'
 
 # these are the handlebars you can use in an article file
 article_handlebars = [
