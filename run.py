@@ -187,10 +187,10 @@ def main(argv):
             at_manual_file = find_file(manual_file_indicator,template_folder)
 
             if at_manual_file == []:
-                print("Warn: No @manual file found.")
+                print("Warn: No @toc file found.")
                 is_manual_files = False
             else:
-                print("Info: @manual file(s) found.")
+                print("Info: @toc file(s) found.")
                 is_manual_files = True
 
                 # read in template data
