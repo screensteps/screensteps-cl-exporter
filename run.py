@@ -77,9 +77,14 @@ def find_file(pattern, path):
                 result.append(os.path.join(root, name))
     return result
 
+def remove_directory(directory):
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
+
 def remove_found_files(files):
     for name in files:
-        os.remove(name)
+        if os.path.exists(name):
+            os.remove(name)
 
 def write_file(directory, name, rawtext):
     with open(os.path.join(directory, name), 'w+') as f:
@@ -353,9 +358,12 @@ def main(argv):
         # clean up the "@" files that we copied over for each site
         if template_specified:
             site_article_folder = os.path.join(site_folder, '@article')
-            shutil.rmtree(site_article_folder)
-            remove_found_files(find_file(article_file_indicator,site_folder))
-            remove_found_files(find_file(manual_file_indicator,site_folder))
+            try:
+                remove_found_files(find_file(article_file_indicator,site_folder))
+                remove_found_files(find_file(manual_file_indicator,site_folder))
+                remove_directory(site_article_folder)
+            except:
+                print("We had trouble deleting the copied template files.  You can ignore any extra files.")
 
 
 if __name__ == "__main__":
