@@ -6,10 +6,14 @@ import json
 import os, fnmatch
 import re
 import shutil
+import urlparse
 
 # globals
 article_file_indicator = '@article.*'
 manual_file_indicator = '@toc.*'
+image_folder_indicator = '@images'
+attach_folder_indicator = '@attachments'
+img_formats = [".tif", ".tiff", ".gif", ".jpeg", ".jpg", ".png"]
 
 # these are the handlebars you can use in an article file
 article_handlebars = [
@@ -61,7 +65,7 @@ def make_dir(directory):
 
 def download_file(directory, url):
     short_path = url.split('/')[-1].split('?')[0]
-    local_filename = directory + '/' + short_path
+    local_filename = os.path.join(directory, short_path)
     r = requests.get(url, stream=True)
     with open(local_filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
@@ -84,7 +88,6 @@ def find_dirs(pattern, path):
             if pattern in dirname.split():
                 result.append(os.path.join(root, dirname))
     return result
-
 
 def split_path(path):
     allparts = []
@@ -113,6 +116,10 @@ def find_relative_path(thispath,template_folder):
     else:
         relative_path = ''
     return relative_path
+
+def find_at_file_path(thispath,template_folder):
+    relative_path = remove_list_overlap(split_path(thispath),split_path(template_folder))
+    return os.path.join(*relative_path)
 
 def remove_directory(directory):
     if os.path.exists(directory):
@@ -192,6 +199,8 @@ def main(argv):
         template_specified = False
         is_article_folder = False
         is_manual_files = False
+        is_image_folder = False
+        is_attach_folder = False
         print("Warn: Template folder not specified.  Will output HTML files only.")
     else:
         # check if template folder exists
@@ -210,6 +219,34 @@ def main(argv):
                 is_article_folder = True
             else:
                 print("Error: More than one @article folder found.")
+                sys.exit()
+
+            # check if folder has an @images folder
+            at_images_folder = find_file(image_folder_indicator,template_folder)
+
+            if len(at_images_folder) == 0:
+                print("Info: No " + image_folder_indicator + " file found.")
+                is_image_folder = False
+            elif len(at_images_folder) == 1:
+                at_images_folder = find_at_file_path(os.path.dirname(at_images_folder[0]),template_folder)
+                print("Info: Template folder has " + at_images_folder[0] + " file. "  + str(at_images_folder))
+                is_image_folder = True
+            else:
+                print("Error: More than one " + image_folder_indicator + " file found.")
+                sys.exit()
+
+            # check if folder has an @attachments folder
+            at_attach_folder = find_file(attach_folder_indicator,template_folder)
+
+            if len(at_attach_folder) == 0:
+                print("Info: No " + attach_folder_indicator + " file found.")
+                is_attach_folder = False
+            elif len(at_attach_folder) == 1:
+                at_attach_folder = find_at_file_path(os.path.dirname(at_attach_folder[0]),template_folder)
+                print("Info: Template folder has " + at_attach_folder[0] + " file. "  + str(at_attach_folder))
+                is_attach_folder = True
+            else:
+                print("Error: More than one " + attach_folder_indicator + " file found.")
                 sys.exit()
 
             # now let's see if there are @article file(s). we'll take as many
@@ -338,24 +375,41 @@ def main(argv):
                                     copy_and_overwrite(at_article_folder, article_folder)
                                 else:
                                     # write html to a file if no templates
-                                    article_folder = os.path.join(site_folder, this_article_id)
-                                    make_dir(article_folder)
+                                    article_folder = site_folder
 
                                 this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
 
                                 article_html = this_article['article']['html_body']
-                                new_html = article_html
 
+                                # loop through attached files
+                                this_articles_files = []
                                 for content_block in this_article['article']['content_blocks']:
                                     if content_block['url'] is not None:
-                                        # folder for files
-                                        files_folder = os.path.join(article_folder, 'files')
-                                        make_dir(files_folder)
+
+                                        # what type of file is it?
+                                        download_ext = os.path.splitext(urlparse.urlparse(content_block['url']).path)[1]
+                                        if download_ext in img_formats: #image
+                                            if is_image_folder:
+                                                files_folder = os.path.join(site_folder,at_images_folder)
+                                                short_files_folder = at_images_folder
+                                            else:
+                                                files_folder = os.path.join(article_folder, 'images')
+                                                short_files_folder = 'images'
+                                                make_dir(files_folder)
+                                        else: # attachment
+                                            if is_attach_folder:
+                                                files_folder = os.path.join(site_folder,at_attach_folder)
+                                                short_files_folder = at_attach_folder
+                                            else:
+                                                files_folder = os.path.join(article_folder, 'attachments')
+                                                short_files_folder = 'attachments'
+                                                make_dir(files_folder)
 
                                         print(">>>>>> Processing file: " + content_block['url'])
                                         new_file_path = download_file(files_folder,content_block['url'])
-                                        new_html = new_html.replace(str(content_block['url']),('files/' + str(new_file_path)))
+                                        this_articles_files.append([str(content_block['url']), os.path.join(short_files_folder,new_file_path)])
 
+                                article_files_paths = []
                                 if template_specified:
                                     # step through each file that starts with "@article"
                                     for path, temp_html in article_files.iteritems():
@@ -374,10 +428,17 @@ def main(argv):
                                             if article_handlebar != "link":
                                                 temp_towrite = temp_towrite.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
 
+                                        for this_articles_file in this_articles_files:
+                                            temp_towrite = temp_towrite.replace(this_articles_file[0],this_articles_file[1])
+
                                         # write file
                                         write_file(site_folder, temp_filename, temp_towrite)
+                                        article_files_paths.append(temp_filename)
                                 else:
-                                    write_file(article_folder, (this_article_id + '.html'), new_html)
+                                    for this_articles_file in this_articles_files:
+                                        article_html = article_html.replace(this_articles_file[0],this_articles_file[1])
+                                    write_file(article_folder, (this_article_id + '.html'), article_html)
+                                    article_files_paths.append((this_article_id + '.html'))
 
                                 # article replaces on str(manual_files_ref[path][2])
                                 if is_manual_files: # are there templates?
@@ -387,7 +448,12 @@ def main(argv):
                                         article_string = str(manual_files_ref[path][2])
                                         for article_handlebar in article_handlebars:
                                             if article_handlebar == "link":
-                                                article_string = article_string.replace(("{{" + str(article_handlebar) + "}}"), this_article_id + '/' + this_article_id + os.path.splitext(path)[1] )
+                                                try:
+                                                    same_ext_link = next(i for i in article_files_paths if os.path.splitext(i)[1] ==  os.path.splitext(path)[1])
+                                                except:
+                                                    print("Error: We didn't find a file extension match for the article from the TOC with: " + os.path.splitext(path)[1])
+                                                    sys.exit()
+                                                article_string = article_string.replace(("{{" + str(article_handlebar) + "}}"), same_ext_link)
                                             else:
                                                 article_string = article_string.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
                                         manual_files_temp[path].append(article_string)
@@ -417,6 +483,8 @@ def main(argv):
             try:
                 remove_found_files(find_file(article_file_indicator,site_folder))
                 remove_found_files(find_file(manual_file_indicator,site_folder))
+                remove_found_files(find_file(image_folder_indicator,site_folder))
+                remove_found_files(find_file(attach_folder_indicator,site_folder))
                 remove_directories(find_dirs("@article", site_folder))
             except:
                 print("We had trouble deleting the copied template files.  You can ignore any extra files.")
