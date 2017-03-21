@@ -77,6 +77,15 @@ def find_file(pattern, path):
                 result.append(os.path.join(root, name))
     return result
 
+def find_dirs(pattern, path):
+    result = []
+    for root, dirs, files in os.walk(path):
+        for dirname in dirs:
+            if pattern in dirname.split():
+                result.append(os.path.join(root, dirname))
+    return result
+
+
 def split_path(path):
     allparts = []
     while 1:
@@ -108,6 +117,10 @@ def find_relative_path(thispath,template_folder):
 def remove_directory(directory):
     if os.path.exists(directory):
         shutil.rmtree(directory)
+
+def remove_directories(directories):
+    for directory in directories:
+        remove_directory(directory)
 
 def remove_found_files(files):
     for name in files:
@@ -177,6 +190,7 @@ def main(argv):
     # have some prep work to do.
     if (template_folder == ''):
         template_specified = False
+        is_article_folder = False
         is_manual_files = False
         print("Warn: Template folder not specified.  Will output HTML files only.")
     else:
@@ -185,31 +199,35 @@ def main(argv):
             template_specified = True
 
             # check if folder has an @article folder
-            at_article_folder = os.path.join(template_folder, '@article')
-            if os.path.exists(at_article_folder):
-                print("Info: Template folder has @article folder.")
+            at_article_folder = find_dirs("@article",template_folder)
 
-                # now let's see if there are @article file(s). we'll take as many
-                # as you want, as long as there is at least one!
-                at_article_file = find_file(article_file_indicator,at_article_folder)
-
-                if at_article_file == []:
-                    print("Error: No @article file found.")
-                    sys.exit()
-
-                # ok, phew we found at least one
-                else:
-                    print("Info: @article file(s) found.")
-
-                    # read in template data
-                    article_files = {}
-                    for each_article_file in at_article_file:
-                        article_files[each_article_file] = read_file(each_article_file)
-
-            # no @article folder, that's a deal killer
+            if len(at_article_folder) == 0:
+                print("Info: No @article folder found.")
+                is_article_folder = False
+            elif len(at_article_folder) == 1:
+                at_article_folder = at_article_folder[0]
+                print("Info: Template folder has @article folder. "  + str(at_article_folder))
+                is_article_folder = True
             else:
-                print("Error: Template folder did not have an @article folder.")
+                print("Error: More than one @article folder found.")
                 sys.exit()
+
+            # now let's see if there are @article file(s). we'll take as many
+            # as you want, as long as there is at least one!
+            at_article_file = find_file(article_file_indicator,template_folder)
+
+            if at_article_file == []:
+                print("Error: No @article file found.")
+                sys.exit()
+
+            # ok, phew we found at least one
+            else:
+                print("Info: @article file(s) found.")
+
+                # read in template data
+                article_files = {}
+                for each_article_file in at_article_file:
+                    article_files[each_article_file] = read_file(each_article_file)
 
             # now let's check if theres a manual file
             at_manual_file = find_file(manual_file_indicator,template_folder)
@@ -315,11 +333,12 @@ def main(argv):
                                 print(">>>>> Processing article: " + article['title'])
                                 print(">>>>> " + str(article))
 
-                                # folder for article - two paths 1) template folder, 2) no template folder
-                                article_folder = os.path.join(site_folder, this_article_id)
-                                if template_specified:
+                                if is_article_folder:
+                                    article_folder = os.path.join(site_folder, find_relative_path(at_article_folder,template_folder),this_article_id)
                                     copy_and_overwrite(at_article_folder, article_folder)
                                 else:
+                                    # write html to a file if no templates
+                                    article_folder = os.path.join(site_folder, this_article_id)
                                     make_dir(article_folder)
 
                                 this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
@@ -340,7 +359,12 @@ def main(argv):
                                 if template_specified:
                                     # step through each file that starts with "@article"
                                     for path, temp_html in article_files.iteritems():
+
+                                        article_relative_path = find_relative_path(path,template_folder)
                                         temp_filename = this_article_id + os.path.splitext(path)[1]
+                                        if article_relative_path != '':
+                                            article_relative_path = article_relative_path.replace("@article",this_article_id)
+                                            temp_filename = os.path.join(article_relative_path,temp_filename)
 
                                         # find and replace {{html}}
                                         temp_towrite = temp_html.replace("""{{html}}""",article_html)
@@ -351,9 +375,8 @@ def main(argv):
                                                 temp_towrite = temp_towrite.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
 
                                         # write file
-                                        write_file(article_folder, temp_filename, temp_towrite)
+                                        write_file(site_folder, temp_filename, temp_towrite)
                                 else:
-                                    # write html to a file if no templates
                                     write_file(article_folder, (this_article_id + '.html'), new_html)
 
                                 # article replaces on str(manual_files_ref[path][2])
@@ -391,11 +414,10 @@ def main(argv):
 
         # clean up the "@" files that we copied over for each site
         if template_specified:
-            site_article_folder = os.path.join(site_folder, '@article')
             try:
                 remove_found_files(find_file(article_file_indicator,site_folder))
                 remove_found_files(find_file(manual_file_indicator,site_folder))
-                remove_directory(site_article_folder)
+                remove_directories(find_dirs("@article", site_folder))
             except:
                 print("We had trouble deleting the copied template files.  You can ignore any extra files.")
 
