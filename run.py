@@ -77,6 +77,34 @@ def find_file(pattern, path):
                 result.append(os.path.join(root, name))
     return result
 
+def split_path(path):
+    allparts = []
+    while 1:
+        parts = os.path.split(path)
+        if parts[0] == path:  # sentinel for absolute paths
+            allparts.insert(0, parts[0])
+            break
+        elif parts[1] == path: # sentinel for relative paths
+            allparts.insert(0, parts[1])
+            break
+        else:
+            path = parts[0]
+            allparts.insert(0, parts[1])
+    return allparts
+
+def remove_list_overlap(larger,smaller):
+    for myitem in smaller:
+        larger.remove(myitem)
+    return larger
+
+def find_relative_path(thispath,template_folder):
+    relative_path = remove_list_overlap(split_path(thispath),split_path(template_folder))
+    if len(relative_path[:-1]) > 0:
+        relative_path = os.path.join(*relative_path[:-1])
+    else:
+        relative_path = ''
+    return relative_path
+
 def remove_directory(directory):
     if os.path.exists(directory):
         shutil.rmtree(directory)
@@ -351,9 +379,15 @@ def main(argv):
                         for path, details in manual_files.iteritems():
                             manual_files_temp[path].append(str(manual_files_ref[path][4]).replace('{{title}}',chapters['manual']['title']))
 
+                            manual_relative_path = find_relative_path(path,template_folder)
+                            if manual_relative_path == '':
+                                manual_relative_path = site_folder
+                            else:
+                                manual_relative_path = os.path.join(site_folder,manual_relative_path)
+
                             # dump files
                             temp_filename = this_manual_id + os.path.splitext(path)[1]
-                            write_file(site_folder, temp_filename, ''.join(manual_files_temp[path]))
+                            write_file(manual_relative_path, temp_filename, ''.join(manual_files_temp[path]))
 
         # clean up the "@" files that we copied over for each site
         if template_specified:
