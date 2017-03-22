@@ -299,19 +299,23 @@ def main(argv):
             sys.exit()
 
     # set up request
-    def screensteps(endpoint):
+    def screensteps_json(endpoint):
         base_url = 'https://' + site_name + '.screenstepslive.com/api/v2/'
         site_endpoint = base_url + endpoint
         try:
             r = requests.get(site_endpoint, auth=(user_id, api_token))
             if r.status_code == 200:
-                return json.loads(r.text)
+                return r.text
             else:
                 print 'Error connecting to server (' + str(r.status_code) + ')'
                 sys.exit(2)
         except requests.exceptions.RequestException:
             print 'Error connecting to server.'
             sys.exit(2)
+
+    def screensteps(endpoint):
+        rawtext = screensteps_json(endpoint)
+        return json.loads(rawtext)
 
     # grab all sites for that user information
     print("> Pulling sites")
@@ -377,6 +381,7 @@ def main(argv):
                                     # write html to a file if no templates
                                     article_folder = site_folder
 
+                                this_article_json = screensteps_json('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
                                 this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
 
                                 article_html = this_article['article']['html_body']
@@ -422,6 +427,7 @@ def main(argv):
 
                                         # find and replace {{html}}
                                         temp_towrite = temp_html.replace("""{{html}}""",article_html)
+                                        temp_towrite = temp_towrite.replace("""{{json}}""",(this_article_json).decode("unicode-escape"))
 
                                         # find and replace all the other handlebars specified
                                         for article_handlebar in article_handlebars:
