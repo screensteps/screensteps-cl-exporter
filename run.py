@@ -285,7 +285,15 @@ def main(argv):
                     # Each @manual file consists of pre-chapter block, chapter block, and post-chapter block
                     # the chapter block then consists of the pre-article block, the article block, and post-article block
                     chapter_split = re.split('{{chapter}}',manual_files[each_manual_file])
+
+                    if len(chapter_split) < 3:
+                        chapter_split = ['',chapter_split[0],'']
+
                     article_split = re.split('{{article}}',chapter_split[1])
+
+                    if len(article_split) < 3:
+                        article_split = ['',article_split[0],'']
+
                     manual_files_ref[each_manual_file] = [
                                                 chapter_split[0], # 0 - pre-chapter
                                                 article_split[0], # 1 - pre-article (chapter)
@@ -397,11 +405,9 @@ def main(argv):
                                             if is_image_folder:
                                                 files_folder = os.path.join(site_folder,at_images_folder)
                                                 short_files_folder = at_images_folder
-                                                print(short_files_folder)
                                                 if '@article' in files_folder:
                                                     files_folder = files_folder.replace("@article",this_article_id)
                                                     short_files_folder = short_files_folder.replace("@article",this_article_id)
-                                                    print("HELLO")
                                             else:
                                                 files_folder = os.path.join(article_folder, 'images')
                                                 short_files_folder = 'images'
