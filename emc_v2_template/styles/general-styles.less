@@ -1,0 +1,40 @@
+html, body {
+	min-height: 100%;
+}
+body {
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+	font-size: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Oswald', 'Open Sans', Helvetica, Arial, sans-serif;
+}
+#header {
+	background: @emc-blue;
+}
+.input-prepend {
+	font-size: 100% !important;
+
+	.btn {
+		margin-right: 0;
+	}
+}
+.btn {
+	padding: 12px 20px;
+	font-family: 'Oswald';
+	font-weight: 300;
+	font-size: 1.1em;
+	color: #fff;
+	text-transform: uppercase;
+	background: #000;
+	border: 0;
+
+	&:hover {
+		color: @emc-blue;
+		background: #fff;
+	}
+	&:active {
+		color: #fff;
+		background: @emc-blue;
+		.box-shadow-none();
+	}
+}

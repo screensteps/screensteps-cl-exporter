@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>EMC - Manual</title>
+	<link type="text/css" rel="stylesheet" href="styles/bootstrap.css"/>
+	<link type="text/css" rel="stylesheet" href="styles/jquery.qtip.min.css"/>
+	<link type="text/css" rel="stylesheet" href="styles/emc-manual.css"/>
+</head>
+<body class="manual">
+
+<div id="content">
+	<div id="manual">
+		<div class="manual-interior">
+			<div id="table-of-contents" class="manual-area"></div>
+			<div id="table-of-contents-header"></div>
+		</div>
+	</div>
+</div>
+
+<script id="template-toc" type="text/x-handlebars-template">
+	<img src="images/manual/gears.png" alt=""/>
+
+	<h1>{{{title}}}</h1>
+
+	<h2>Table of Contents</h2>
+
+	<p>Choose a chapter</p>
+	<ul>
+		{{#each chapters}}
+		<li class="switch-area" data-target="#chapter-{{number}}">
+			<span>{{number}}</span>
+
+			<h3>{{{title}}}</h3>
+		</li>
+		{{/each}}
+	</ul>
+</script>
+
+<script id="template-toc-side" type="text/x-handlebars-template">
+	<p>Chapters <a href="" id="back-to-toc">Back to Table of Contents</a></p>
+	<ul>
+		{{#each chapters}}
+		<li class="switch-area" data-target="#chapter-{{number}}" title="{{{title}}}">
+			{{number}}
+		</li>
+		{{/each}}
+	</ul>
+	<a href="#" id="table-of-contents-prev" class="toc-header-top toc-header-top-left"></a><a href="#"
+																							  id="table-of-contents-next"
+																							  class="toc-header-top toc-header-top-right"></a>
+</script>
+
+<script id="template-chapter" type="text/x-handlebars-template">
+	<div id="chapter-{{number}}" class="manual-area chapter">
+		<h2>Chapter {{number}}:</h2>
+
+		<h3>{{{title}}}</h3>
+
+		<div class="pages-interior">
+			<div class="chapter-loading"><h3>Loading...</h3></div>
+		</div>
+	</div>
+</script>
+
+<script id="template-article" type="text/x-handlebars-template">
+	{{#unless steps}}
+	<div id="step-none"
+		 class="article-{{../chapter}}-{{../chapterOrder}} page step-container {{#if ../activePage}}active-page{{/if}}">
+		<div class="paging-prev-next">
+			<a class="prev"></a>
+
+			<div class="page-numbers">
+				Pages <br/>
+				<span class="current-page"></span>
+				<em>of</em>
+				<span class="total-pages"></span>
+			</div>
+			<a class="next"></a>
+		</div>
+		<h1 class="article-title">{{{title}}}</h1>
+
+		<div class="article-description">
+			{{{stripLinks description}}}
+		</div>
+		<div class="paging-prev-next">
+			<a class="prev"></a>
+
+			<div class="page-numbers">
+				Pages <br/>
+				<span class="current-page"></span>
+				<em>of</em>
+				<span class="total-pages"></span>
+			</div>
+			<a class="next"></a>
+		</div>
+	</div>
+	{{/unless}}
+	{{#each steps}}
+	<div id="step-{{id}}"
+		 class="article-{{../chapter}}-{{../chapterOrder}} page step-container {{#unless @index}}{{#if ../../activePage}}active-page{{/if}}{{/unless}}">
+		<div class="paging-prev-next">
+			<a class="prev"></a>
+
+			<div class="page-numbers">
+				Pages <br/>
+				<span class="current-page"></span>
+				<em>of</em>
+				<span class="total-pages"></span>
+			</div>
+			<a class="next"></a>
+		</div>
+		{{#unless @index}}
+		<h1 class="article-title">{{{../../title}}}</h1>
+
+		<div class="article-description">
+			{{{stripLinks ../../description}}}
+		</div>
+		{{/unless}}
+		<h2 class="step-title">{{{title}}}</h2>
+
+		<div class="step-instructions">
+			{{{stripLinks instructions}}}
+		</div>
+		<div class="step-image-container">
+			{{#if media.fullsize}}
+				<img src="{{media.fullsize.relative_filename}}" style="max-width: {{media.fullsize.width}}px"/>
+			{{/if}}
+			<div id="canvas-{{id}}" class="step-canvas"></div>
+		</div>
+		<div class="paging-prev-next">
+			<a class="prev"></a>
+
+			<div class="page-numbers">
+				Pages <br/>
+				<span class="current-page"></span>
+				<em>of</em>
+				<span class="total-pages"></span>
+			</div>
+			<a class="next"></a>
+		</div>
+	</div>
+	{{/each}}
+</script>
+
+<script src="js/handlebars-v1.3.0.js"></script>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.qtip.min.js"></script>
+<script src="js/main.js"></script>
+<script src="/manuals/js/imgpop.js"></script>
+
+<script>
+	$(document).ready(function () {
+		/*
+		 * Manual Parsing
+		 */
+		var parser = new ManualParser("manual/");
+		parser.fetchManual();
+	});
+</script>
+
+</body>
+</html>

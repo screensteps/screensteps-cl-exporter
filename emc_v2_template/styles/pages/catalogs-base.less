@@ -1,0 +1,37 @@
+body {
+
+	#content {
+		clear: both;
+
+		.right {
+			float: right;
+			width: 288px;
+			margin-right: 12px;
+
+			.block {
+				padding: 12px 10px 14px 13px;
+				background: #fff;
+				background: rgba(255, 255, 255, 0.7);
+
+				&:first-child {
+					position: relative;
+					padding-top: 74px;
+
+					&:before {
+						content: "";
+						.block(94px, 62px);
+						.absolute-left-top(13px, 12px);
+						background: url("../images/catalogs/catalogs-sprite.png") no-repeat 0 -262px;
+					}
+				}
+				h3 {
+					font-weight: 400;
+					font-size: 1.3em;
+				}
+			}
+			.block + .block {
+				margin-top: 11px;
+			}
+		}
+	}
+}

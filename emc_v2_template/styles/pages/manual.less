@@ -1,0 +1,318 @@
+html {
+    height: 100%;
+}
+
+body.manual, body.image-modal {
+    height: 100%;
+
+    h1, h2, h3, h4, h5 {
+        color: #3d87bc;
+    }
+    #content {
+        height: 100%;
+    }
+    #manual {
+        bottom: 0;
+        height: 100%;
+        background: #ededed;
+
+        .manual-interior {
+            height: 100%;
+            overflow-y: auto;
+
+            #table-of-contents {
+                width: 400px;
+                margin: 0 auto 50px;
+
+                h1, h2, h3 {
+                    font-weight: normal;
+                    text-transform: uppercase;
+                }
+                p, h3 {
+                    font-family: Verdana, Helvetica, Arial, sans-serif;
+                }
+                img {
+                    display: block;
+                    margin: 0 auto;
+                    padding: 70px 0 46px;
+                }
+                h1 {
+                    margin-bottom: 28px;
+                    font-size: 28px;
+                }
+                h2 {
+                    font-size: 22px;
+                    margin-bottom: 0;
+                }
+                p {
+                    margin: -6px 0 10px;
+                    font-size: 14px;
+                    letter-spacing: 0.02em;
+                }
+                ul {
+                    margin: 0;
+                    list-style: none;
+
+                    li {
+                        position: relative;
+                        .width-height(100%, auto);
+                        background-color: #3d87bc;
+                        background-repeat: no-repeat;
+                        background-position: 33px 38px;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: #1b6498;
+                        }
+                        h3 {
+                            padding: 30px 25px 30px 96px;
+                            font-size: 18px;
+                            color: #fff;
+                            line-height: 1.2em;
+                        }
+                        span {
+                            float: left;
+                            .absolute-left-top(33px, 50%);
+                            margin-top: -11px;
+                            font-family: 'Oswald', sans-serif;
+                            font-size: 36px;
+                            color: white;
+                        }
+                    }
+                    li + li {
+                        margin-top: 24px;
+                    }
+                }
+            }
+            #table-of-contents-header {
+                position: relative;
+                display: none;
+                padding: 0 30px;
+                margin-top: 10px;
+                overflow: hidden;
+                white-space: nowrap;
+
+                p {
+                    font-size: 0.8em;
+                    font-weight: bold;
+                    text-transform: uppercase;
+
+                    a {
+                        margin-left: 30px;
+                    }
+                }
+                ul {
+                    width: 582px;
+                    overflow: hidden;
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+
+                    .switch-area {
+                        display: inline-block;
+                        width: 40px;
+                        height: 40px;
+                        margin-right: 1px;
+                        background-color: @gray-medium;
+                        color: white;
+                        line-height: 40px;
+                        font-weight: bold;
+                        text-align: center;
+                        cursor: pointer;
+
+                        &.active-chapter {
+                            background-color: @emc-blue;
+                        }
+                    }
+                }
+                .toc-header-top {
+                    position: absolute;
+                    display: block;
+                    width: 20px;
+                    height: 40px;
+                    background-color: red;
+
+                    &.toc-header-top-left {
+                        top: 40px;
+                        left: 8px;
+                        background: url("../images/manual/toc-header-prev.png") no-repeat center center;
+                    }
+                    &.toc-header-top-right {
+                        top: 40px;
+                        left: 613px;
+                        background: url("../images/manual/toc-header-next.png") no-repeat center center;
+
+                    }
+                }
+            }
+            .chapter {
+                display: none;
+                margin: 0 auto 28px 0;
+                overflow: hidden;
+
+                > h2 {
+                    margin: 27px 0 0 30px;
+                    font-size: 25px;
+                    font-weight: normal;
+                    text-transform: uppercase;
+                    letter-spacing: 0.02em;
+                }
+                > h3 {
+                    margin: 0 0 0 30px;
+                    font-size: 22px;
+                    line-height: 1.6em;
+                    font-weight: normal;
+                    letter-spacing: 0.005em;
+                }
+
+                .pages-interior {
+                    margin: 20px 30px 50px;
+                    padding: 30px;
+                    background: #fff;
+                    .transition(all);
+
+                    .chapter-loading {
+                        text-align: center;
+                    }
+                    .page {
+                        display: none;
+
+						&.active-page {
+							display: block;
+						}
+                        h1 {
+                            margin-bottom: 4px;
+                            font-size: 20px;
+                            font-weight: normal;
+                        }
+                        h2 {
+                            position: relative;
+                            font-size: 16px;
+                            font-weight: normal;
+                            line-height: 1.6em;
+                            margin: 16px 0 5px 50px;
+
+                            &:before {
+                                content: "";
+                                .absolute-left-top(-20px, 7px);
+                                .block(11px, 11px);
+                                background: #3d87bc;
+                            }
+                        }
+                        h3 {
+                            font-size: 14px;
+                        }
+                        p {
+                            line-height: 1.6em;
+                            margin-bottom: 22px;
+                        }
+                        .step-instructions {
+                            p {
+                                margin: 0 20px 4px 50px;
+                            }
+                            ul, ol {
+                                margin: 17px 31px 10px 16px;
+                                padding: 11px 0 12px 50px;
+
+                                li {
+                                    margin-bottom: 5px;
+                                }
+                            }
+                        }
+                        .step-image-container {
+
+                            img {
+                                .block(100%, auto);
+                                margin: 15px auto;
+                            }
+                            .step-canvas {
+                                position: relative;
+                            }
+                        }
+                    }
+                }
+                .paging-prev-next {
+
+                    .page-numbers {
+                        min-width: 60px;
+                        display: inline-block;
+                        font-family: 'Oswald', sans-serif;
+                        font-size: 0.9em;
+                        text-align: center;
+                        text-transform: uppercase;
+
+                        em {
+                            margin-right: 2px;
+                            font-weight: 300;
+                            text-transform: none;
+                        }
+                        .current-page, .total-pages {
+                            color: @emc-blue;
+                            text-transform: none;
+                        }
+                    }
+                    .button-wrapper {
+                        display: inline-block;
+                        width: 37px;
+                        height: 37px;
+                    }
+                    .prev, .next {
+                        display: inline-block;
+                        width: 37px;
+                        height: 37px;
+                        vertical-align: middle;
+                        font-family: 'Oswald', sans-serif;
+                        font-size: 25px;
+                        font-weight: 300;
+                        text-transform: uppercase;
+                        cursor: pointer;
+
+                        &:hover {
+                            color: #1b6498;
+                            text-decoration: none;
+                        }
+                        &::selection, &::-moz-selection {
+                            background: transparent;
+                        }
+                    }
+                    .prev {
+                        background: url("../images/manual/arrow-left.png") no-repeat 0 0;
+
+                        &:hover {
+                            background-position: 0 100%;
+                        }
+                    }
+                    .next {
+                        background: url("../images/manual/arrow-right.png") no-repeat 100% 0;
+
+                        &:hover {
+                            background-position: 100% 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .tooltip {
+        border-color: @emc-blue;
+        background-color: @emc-blue;
+
+        .qtip-content {
+            color: white;
+        }
+    }
+}
+
+body.image-modal {
+    margin: 0px;
+    padding: 0px;
+    background-color: #ededed;
+    text-align: center;
+
+    h3 {
+        margin: 5px 0;
+    }
+}
+
+

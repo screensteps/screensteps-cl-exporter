@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>EMC Manual Image</title>
+	<link type="text/css" rel="stylesheet" href="styles/emc-manual.css"/>
+</head>
+<body class="image-modal">
+	<h3>Please close this window when finished.</h3>
+	<img src="" id="modal_image"/>
+
+	<script src="js/jquery-1.11.0.min.js"></script>
+	<script>
+		var minWidth = 350;
+
+		$(document).ready(function() {
+			var imageURL = getUrlVar("image");
+			var width = parseInt(getUrlVar("width"));
+			var height = parseInt(getUrlVar("height"));
+			$("#modal_image").attr("src", imageURL);
+			window.resizeTo(width + 20, height + 120);
+
+			$(window).resize(function() {
+				var docWidth = $(window).width();
+				$("#modal_image").css("width", Math.min(docWidth, width));
+			});
+		});
+
+		function getUrlVar(key){
+			var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
+			return result && decodeURIComponent(result[1]) || "";
+		}
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+<?php
+	$manual = json_encode($manual);
+	echo $manual;
+?>

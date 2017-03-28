@@ -1,0 +1,538 @@
+@font-face {
+  font-family: 'Oswald';
+  src: url('webfonts/oswald-bold-webfont.eot');
+  src: url('webfonts/oswald-bold-webfont.eot?#iefix') format('embedded-opentype'), url('webfonts/oswald-bold-webfont.woff') format('woff'), url('webfonts/oswald-bold-webfont.ttf') format('truetype'), url('webfonts/oswald-bold-webfont.svg#oswaldbold') format('svg');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Oswald';
+  src: url('webfonts/oswald-light-webfont.eot');
+  src: url('webfonts/oswald-light-webfont.eot?#iefix') format('embedded-opentype'), url('webfonts/oswald-light-webfont.woff') format('woff'), url('webfonts/oswald-light-webfont.ttf') format('truetype'), url('webfonts/oswald-light-webfont.svg#oswaldlight') format('svg');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Oswald';
+  src: url('webfonts/oswald-regular-webfont.eot');
+  src: url('webfonts/oswald-regular-webfont.eot?#iefix') format('embedded-opentype'), url('webfonts/oswald-regular-webfont.woff') format('woff'), url('webfonts/oswald-regular-webfont.ttf') format('truetype'), url('webfonts/oswald-regular-webfont.svg#oswaldregular') format('svg');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('webfonts/opensans-bold-webfont.eot');
+  src: url('webfonts/opensans-bold-webfont.eot?#iefix') format('embedded-opentype'), url('webfonts/opensans-bold-webfont.woff') format('woff'), url('webfonts/opensans-bold-webfont.ttf') format('truetype'), url('webfonts/opensans-bold-webfont.svg#open_sansbold') format('svg');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('webfonts/opensans-italic-webfont.eot');
+  src: url('webfonts/opensans-italic-webfont.eot?#iefix') format('embedded-opentype'), url('webfonts/opensans-italic-webfont.woff') format('woff'), url('webfonts/opensans-italic-webfont.ttf') format('truetype'), url('webfonts/opensans-italic-webfont.svg#open_sansitalic') format('svg');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: url('webfonts/opensans-regular-webfont.eot');
+  src: url('webfonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'), url('webfonts/opensans-regular-webfont.woff') format('woff'), url('webfonts/opensans-regular-webfont.ttf') format('truetype'), url('webfonts/opensans-regular-webfont.svg#open_sansregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.preserve-3d {
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+.shine-hover-state {
+  -moz-background-size: 250% 250%, 100% 100%;
+  background-size: 250% 250%, 100% 100%;
+  -webkit-transition: background-position 0 ease-in;
+  -moz-transition: background-position 0 ease-in;
+  -o-transition: background-position 0 ease-in;
+  transition: background-position 0 ease-in;
+}
+.shine-hover-state:hover,
+.shine-hover-state:focus {
+  background-position: 0 0, 0 0;
+  -webkit-transition: background-position 0.35s cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  -moz-transition: background-position 0.35s cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  -ms-transition: background-position 0.35s cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  -o-transition: background-position 0.35s cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  transition: background-position 0.35s cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  /* custom */
+  -webkit-transition-timing-function: cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  -moz-transition-timing-function: cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  -ms-transition-timing-function: cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  -o-transition-timing-function: cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  transition-timing-function: cubic-bezier(0.57, 0.065, 0.44, 0.965);
+  /* custom */
+}
+.default-shadow {
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+html,
+body {
+  min-height: 100%;
+}
+body {
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-size: 100%;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Oswald', 'Open Sans', Helvetica, Arial, sans-serif;
+}
+#header {
+  background: #3d87bc;
+}
+.input-prepend {
+  font-size: 100% !important;
+}
+.input-prepend .btn {
+  margin-right: 0;
+}
+.btn {
+  padding: 12px 20px;
+  font-family: 'Oswald';
+  font-weight: 300;
+  font-size: 1.1em;
+  color: #fff;
+  text-transform: uppercase;
+  background: #000;
+  border: 0;
+}
+.btn:hover {
+  color: #3d87bc;
+  background: #fff;
+}
+.btn:active {
+  color: #fff;
+  background: #3d87bc;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+}
+body #content {
+  clear: both;
+}
+body #content .right {
+  float: right;
+  width: 288px;
+  margin-right: 12px;
+}
+body #content .right .block {
+  padding: 12px 10px 14px 13px;
+  background: #fff;
+  background: rgba(255, 255, 255, 0.7);
+}
+body #content .right .block:first-child {
+  position: relative;
+  padding-top: 74px;
+}
+body #content .right .block:first-child:before {
+  content: "";
+  display: block;
+  width: 94px;
+  height: 62px;
+  position: absolute;
+  left: 13px;
+  top: 12px;
+  background: url("../images/catalogs/catalogs-sprite.png") no-repeat 0 -262px;
+}
+body #content .right .block h3 {
+  font-weight: 400;
+  font-size: 1.3em;
+}
+body #content .right .block + .block {
+  margin-top: 11px;
+}
+html {
+  height: 100%;
+}
+body.manual,
+body.image-modal {
+  height: 100%;
+}
+body.manual h1,
+body.image-modal h1,
+body.manual h2,
+body.image-modal h2,
+body.manual h3,
+body.image-modal h3,
+body.manual h4,
+body.image-modal h4,
+body.manual h5,
+body.image-modal h5 {
+  color: #3d87bc;
+}
+body.manual #content,
+body.image-modal #content {
+  height: 100%;
+}
+body.manual #manual,
+body.image-modal #manual {
+  bottom: 0;
+  height: 100%;
+  background: #ededed;
+}
+body.manual #manual .manual-interior,
+body.image-modal #manual .manual-interior {
+  height: 100%;
+  overflow-y: auto;
+}
+body.manual #manual .manual-interior #table-of-contents,
+body.image-modal #manual .manual-interior #table-of-contents {
+  width: 400px;
+  margin: 0 auto 50px;
+}
+body.manual #manual .manual-interior #table-of-contents h1,
+body.image-modal #manual .manual-interior #table-of-contents h1,
+body.manual #manual .manual-interior #table-of-contents h2,
+body.image-modal #manual .manual-interior #table-of-contents h2,
+body.manual #manual .manual-interior #table-of-contents h3,
+body.image-modal #manual .manual-interior #table-of-contents h3 {
+  font-weight: normal;
+  text-transform: uppercase;
+}
+body.manual #manual .manual-interior #table-of-contents p,
+body.image-modal #manual .manual-interior #table-of-contents p,
+body.manual #manual .manual-interior #table-of-contents h3,
+body.image-modal #manual .manual-interior #table-of-contents h3 {
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+}
+body.manual #manual .manual-interior #table-of-contents img,
+body.image-modal #manual .manual-interior #table-of-contents img {
+  display: block;
+  margin: 0 auto;
+  padding: 70px 0 46px;
+}
+body.manual #manual .manual-interior #table-of-contents h1,
+body.image-modal #manual .manual-interior #table-of-contents h1 {
+  margin-bottom: 28px;
+  font-size: 28px;
+}
+body.manual #manual .manual-interior #table-of-contents h2,
+body.image-modal #manual .manual-interior #table-of-contents h2 {
+  font-size: 22px;
+  margin-bottom: 0;
+}
+body.manual #manual .manual-interior #table-of-contents p,
+body.image-modal #manual .manual-interior #table-of-contents p {
+  margin: -6px 0 10px;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+body.manual #manual .manual-interior #table-of-contents ul,
+body.image-modal #manual .manual-interior #table-of-contents ul {
+  margin: 0;
+  list-style: none;
+}
+body.manual #manual .manual-interior #table-of-contents ul li,
+body.image-modal #manual .manual-interior #table-of-contents ul li {
+  position: relative;
+  width: 100%;
+  height: auto;
+  background-color: #3d87bc;
+  background-repeat: no-repeat;
+  background-position: 33px 38px;
+  cursor: pointer;
+}
+body.manual #manual .manual-interior #table-of-contents ul li:hover,
+body.image-modal #manual .manual-interior #table-of-contents ul li:hover {
+  background-color: #1b6498;
+}
+body.manual #manual .manual-interior #table-of-contents ul li h3,
+body.image-modal #manual .manual-interior #table-of-contents ul li h3 {
+  padding: 30px 25px 30px 96px;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.2em;
+}
+body.manual #manual .manual-interior #table-of-contents ul li span,
+body.image-modal #manual .manual-interior #table-of-contents ul li span {
+  float: left;
+  position: absolute;
+  left: 33px;
+  top: 50%;
+  margin-top: -11px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 36px;
+  color: white;
+}
+body.manual #manual .manual-interior #table-of-contents ul li + li,
+body.image-modal #manual .manual-interior #table-of-contents ul li + li {
+  margin-top: 24px;
+}
+body.manual #manual .manual-interior #table-of-contents-header,
+body.image-modal #manual .manual-interior #table-of-contents-header {
+  position: relative;
+  display: none;
+  padding: 0 30px;
+  margin-top: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+body.manual #manual .manual-interior #table-of-contents-header p,
+body.image-modal #manual .manual-interior #table-of-contents-header p {
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+body.manual #manual .manual-interior #table-of-contents-header p a,
+body.image-modal #manual .manual-interior #table-of-contents-header p a {
+  margin-left: 30px;
+}
+body.manual #manual .manual-interior #table-of-contents-header ul,
+body.image-modal #manual .manual-interior #table-of-contents-header ul {
+  width: 582px;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+body.manual #manual .manual-interior #table-of-contents-header ul .switch-area,
+body.image-modal #manual .manual-interior #table-of-contents-header ul .switch-area {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-right: 1px;
+  background-color: #d0cfcf;
+  color: white;
+  line-height: 40px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+body.manual #manual .manual-interior #table-of-contents-header ul .switch-area.active-chapter,
+body.image-modal #manual .manual-interior #table-of-contents-header ul .switch-area.active-chapter {
+  background-color: #3d87bc;
+}
+body.manual #manual .manual-interior #table-of-contents-header .toc-header-top,
+body.image-modal #manual .manual-interior #table-of-contents-header .toc-header-top {
+  position: absolute;
+  display: block;
+  width: 20px;
+  height: 40px;
+  background-color: red;
+}
+body.manual #manual .manual-interior #table-of-contents-header .toc-header-top.toc-header-top-left,
+body.image-modal #manual .manual-interior #table-of-contents-header .toc-header-top.toc-header-top-left {
+  top: 40px;
+  left: 8px;
+  background: url("../images/manual/toc-header-prev.png") no-repeat center center;
+}
+body.manual #manual .manual-interior #table-of-contents-header .toc-header-top.toc-header-top-right,
+body.image-modal #manual .manual-interior #table-of-contents-header .toc-header-top.toc-header-top-right {
+  top: 40px;
+  left: 613px;
+  background: url("../images/manual/toc-header-next.png") no-repeat center center;
+}
+body.manual #manual .manual-interior .chapter,
+body.image-modal #manual .manual-interior .chapter {
+  display: none;
+  margin: 0 auto 28px 0;
+  overflow: hidden;
+}
+body.manual #manual .manual-interior .chapter > h2,
+body.image-modal #manual .manual-interior .chapter > h2 {
+  margin: 27px 0 0 30px;
+  font-size: 25px;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+body.manual #manual .manual-interior .chapter > h3,
+body.image-modal #manual .manual-interior .chapter > h3 {
+  margin: 0 0 0 30px;
+  font-size: 22px;
+  line-height: 1.6em;
+  font-weight: normal;
+  letter-spacing: 0.005em;
+}
+body.manual #manual .manual-interior .chapter .pages-interior,
+body.image-modal #manual .manual-interior .chapter .pages-interior {
+  margin: 20px 30px 50px;
+  padding: 30px;
+  background: #fff;
+  -webkit-transition: all 300ms ease-in;
+  -moz-transition: all 300ms ease-in;
+  -o-transition: all 300ms ease-in;
+  transition: all 300ms ease-in;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .chapter-loading,
+body.image-modal #manual .manual-interior .chapter .pages-interior .chapter-loading {
+  text-align: center;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page {
+  display: none;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page.active-page,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page.active-page {
+  display: block;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page h1,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page h1 {
+  margin-bottom: 4px;
+  font-size: 20px;
+  font-weight: normal;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page h2,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page h2 {
+  position: relative;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.6em;
+  margin: 16px 0 5px 50px;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page h2:before,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page h2:before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 7px;
+  display: block;
+  width: 11px;
+  height: 11px;
+  background: #3d87bc;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page h3,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page h3 {
+  font-size: 14px;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page p,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page p {
+  line-height: 1.6em;
+  margin-bottom: 22px;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page .step-instructions p,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page .step-instructions p {
+  margin: 0 20px 4px 50px;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page .step-instructions ul,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page .step-instructions ul,
+body.manual #manual .manual-interior .chapter .pages-interior .page .step-instructions ol,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page .step-instructions ol {
+  margin: 17px 31px 10px 16px;
+  padding: 11px 0 12px 50px;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page .step-instructions ul li,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page .step-instructions ul li,
+body.manual #manual .manual-interior .chapter .pages-interior .page .step-instructions ol li,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page .step-instructions ol li {
+  margin-bottom: 5px;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page .step-image-container img,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page .step-image-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 15px auto;
+}
+body.manual #manual .manual-interior .chapter .pages-interior .page .step-image-container .step-canvas,
+body.image-modal #manual .manual-interior .chapter .pages-interior .page .step-image-container .step-canvas {
+  position: relative;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .page-numbers,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .page-numbers {
+  min-width: 60px;
+  display: inline-block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9em;
+  text-align: center;
+  text-transform: uppercase;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .page-numbers em,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .page-numbers em {
+  margin-right: 2px;
+  font-weight: 300;
+  text-transform: none;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .page-numbers .current-page,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .page-numbers .current-page,
+body.manual #manual .manual-interior .chapter .paging-prev-next .page-numbers .total-pages,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .page-numbers .total-pages {
+  color: #3d87bc;
+  text-transform: none;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .button-wrapper,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .button-wrapper {
+  display: inline-block;
+  width: 37px;
+  height: 37px;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .prev,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .prev,
+body.manual #manual .manual-interior .chapter .paging-prev-next .next,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .next {
+  display: inline-block;
+  width: 37px;
+  height: 37px;
+  vertical-align: middle;
+  font-family: 'Oswald', sans-serif;
+  font-size: 25px;
+  font-weight: 300;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .prev:hover,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .prev:hover,
+body.manual #manual .manual-interior .chapter .paging-prev-next .next:hover,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .next:hover {
+  color: #1b6498;
+  text-decoration: none;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .prev::selection,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .prev::selection,
+body.manual #manual .manual-interior .chapter .paging-prev-next .next::selection,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .next::selection,
+body.manual #manual .manual-interior .chapter .paging-prev-next .prev::-moz-selection,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .prev::-moz-selection,
+body.manual #manual .manual-interior .chapter .paging-prev-next .next::-moz-selection,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .next::-moz-selection {
+  background: transparent;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .prev,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .prev {
+  background: url("../images/manual/arrow-left.png") no-repeat 0 0;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .prev:hover,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .prev:hover {
+  background-position: 0 100%;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .next,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .next {
+  background: url("../images/manual/arrow-right.png") no-repeat 100% 0;
+}
+body.manual #manual .manual-interior .chapter .paging-prev-next .next:hover,
+body.image-modal #manual .manual-interior .chapter .paging-prev-next .next:hover {
+  background-position: 100% 100%;
+}
+body.manual .tooltip,
+body.image-modal .tooltip {
+  border-color: #3d87bc;
+  background-color: #3d87bc;
+}
+body.manual .tooltip .qtip-content,
+body.image-modal .tooltip .qtip-content {
+  color: white;
+}
+body.image-modal {
+  margin: 0px;
+  padding: 0px;
+  background-color: #ededed;
+  text-align: center;
+}
+body.image-modal h3 {
+  margin: 5px 0;
+}
