@@ -285,7 +285,18 @@ def main(argv):
                     # Each @manual file consists of pre-chapter block, chapter block, and post-chapter block
                     # the chapter block then consists of the pre-article block, the article block, and post-article block
                     chapter_split = re.split('{{chapter}}',manual_files[each_manual_file])
+
+                    if len(chapter_split) < 3:
+                        chapter_split = ['',chapter_split[0],'']
+
                     article_split = re.split('{{article}}',chapter_split[1])
+
+                    if len(article_split) < 3:
+                        add_end_manual_file = article_split[0]
+                        article_split = ['','','']
+                    else:
+                        add_end_manual_file = ''
+
                     manual_files_ref[each_manual_file] = [
                                                 chapter_split[0], # 0 - pre-chapter
                                                 article_split[0], # 1 - pre-article (chapter)
@@ -397,6 +408,9 @@ def main(argv):
                                             if is_image_folder:
                                                 files_folder = os.path.join(site_folder,at_images_folder)
                                                 short_files_folder = at_images_folder
+                                                if '@article' in files_folder:
+                                                    files_folder = files_folder.replace("@article",this_article_id)
+                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
                                             else:
                                                 files_folder = os.path.join(article_folder, 'images')
                                                 short_files_folder = 'images'
@@ -405,6 +419,9 @@ def main(argv):
                                             if is_attach_folder:
                                                 files_folder = os.path.join(site_folder,at_attach_folder)
                                                 short_files_folder = at_attach_folder
+                                                if '@article' in files_folder:
+                                                    files_folder = files_folder.replace("@article",this_article_id)
+                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
                                             else:
                                                 files_folder = os.path.join(article_folder, 'attachments')
                                                 short_files_folder = 'attachments'
@@ -482,7 +499,7 @@ def main(argv):
 
                             # dump files
                             temp_filename = this_manual_id + os.path.splitext(path)[1]
-                            write_file(manual_relative_path, temp_filename, ''.join(manual_files_temp[path]))
+                            write_file(manual_relative_path, temp_filename, (''.join(manual_files_temp[path]) + add_end_manual_file))
 
         # clean up the "@" files that we copied over for each site
         if template_specified:
