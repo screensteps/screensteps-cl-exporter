@@ -397,6 +397,11 @@ def main(argv):
                                             if is_image_folder:
                                                 files_folder = os.path.join(site_folder,at_images_folder)
                                                 short_files_folder = at_images_folder
+                                                print(short_files_folder)
+                                                if '@article' in files_folder:
+                                                    files_folder = files_folder.replace("@article",this_article_id)
+                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
+                                                    print("HELLO")
                                             else:
                                                 files_folder = os.path.join(article_folder, 'images')
                                                 short_files_folder = 'images'
@@ -405,6 +410,9 @@ def main(argv):
                                             if is_attach_folder:
                                                 files_folder = os.path.join(site_folder,at_attach_folder)
                                                 short_files_folder = at_attach_folder
+                                                if '@article' in files_folder:
+                                                    files_folder = files_folder.replace("@article",this_article_id)
+                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
                                             else:
                                                 files_folder = os.path.join(article_folder, 'attachments')
                                                 short_files_folder = 'attachments'
