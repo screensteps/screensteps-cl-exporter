@@ -292,7 +292,10 @@ def main(argv):
                     article_split = re.split('{{article}}',chapter_split[1])
 
                     if len(article_split) < 3:
-                        article_split = ['',article_split[0],'']
+                        add_end_manual_file = article_split[0]
+                        article_split = ['','','']
+                    else:
+                        add_end_manual_file = ''
 
                     manual_files_ref[each_manual_file] = [
                                                 chapter_split[0], # 0 - pre-chapter
@@ -496,7 +499,7 @@ def main(argv):
 
                             # dump files
                             temp_filename = this_manual_id + os.path.splitext(path)[1]
-                            write_file(manual_relative_path, temp_filename, ''.join(manual_files_temp[path]))
+                            write_file(manual_relative_path, temp_filename, (''.join(manual_files_temp[path]) + add_end_manual_file))
 
         # clean up the "@" files that we copied over for each site
         if template_specified:
