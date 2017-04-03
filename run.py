@@ -106,7 +106,8 @@ def split_path(path):
 
 def remove_list_overlap(larger,smaller):
     for myitem in smaller:
-        larger.remove(myitem)
+        if myitem in larger:
+            larger.remove(myitem)
     return larger
 
 def find_relative_path(thispath,template_folder):
