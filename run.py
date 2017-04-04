@@ -358,6 +358,7 @@ def main(argv):
                     print(">>> " + str(manual))
 
                     chapters = screensteps('sites/' + this_site_id + '/manuals/' + this_manual_id) # grab chapters
+                    chapters_json = screensteps_json('sites/' + this_site_id + '/manuals/' + this_manual_id)
 
                     # pre-chapter replaces on str(manual_files_ref[path][0])
                     if is_manual_files: # are there templates?
@@ -500,7 +501,9 @@ def main(argv):
 
                             # dump files
                             temp_filename = this_manual_id + os.path.splitext(path)[1]
-                            write_file(manual_relative_path, temp_filename, (''.join(manual_files_temp[path]) + add_end_manual_file))
+                            temp_file_contents = (''.join(manual_files_temp[path]) + add_end_manual_file)
+                            temp_file_contents = temp_file_contents.replace("""{{json}}""",(chapters_json).decode("unicode-escape"))
+                            write_file(manual_relative_path, temp_filename, temp_file_contents)
 
         # clean up the "@" files that we copied over for each site
         if template_specified:
