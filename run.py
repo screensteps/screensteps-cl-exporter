@@ -438,11 +438,13 @@ def main(argv):
                                     # step through each file that starts with "@article"
                                     for path, temp_html in article_files.iteritems():
 
+                                        back_dir = ''
                                         article_relative_path = find_relative_path(path,template_folder)
                                         temp_filename = this_article_id + os.path.splitext(path)[1]
                                         if article_relative_path != '':
                                             article_relative_path = article_relative_path.replace("@article",this_article_id)
                                             temp_filename = os.path.join(article_relative_path,temp_filename)
+                                            back_dir = '../' * len(split_path(article_relative_path))
 
                                         # find and replace {{html}}
                                         temp_towrite = temp_html.replace("""{{html}}""",article_html)
@@ -454,7 +456,7 @@ def main(argv):
                                                 temp_towrite = temp_towrite.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
 
                                         for this_articles_file in this_articles_files:
-                                            temp_towrite = temp_towrite.replace(this_articles_file[0],this_articles_file[1])
+                                            temp_towrite = temp_towrite.replace(this_articles_file[0],(back_dir + this_articles_file[1]))
 
                                         # write file
                                         write_file(site_folder, temp_filename, temp_towrite)
