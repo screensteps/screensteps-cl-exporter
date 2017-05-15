@@ -45,6 +45,8 @@ You can tell the exporter how to format the output by passing in the path to a t
 - `@article.html` or `@article.json` file: The folder where either of these files resides determines where articles will be placed. The `@article` portion of the file name will be replaced with the numerical id of the article on the ScreenSteps server. The file suffix determines if HTML or JSON content will be inserted into the file.
 - `@images`: Files used in articles will be placed in the directory where this file is located. If the `@images` file is in a folder named `@article` then a different folder will be created for each article. The folder will be named using the numerical id of the article on the ScreenSteps server and the images for the article will be placed inside.
 
+Look in the `samples` directory for a working example.
+
 ### Example template:
 
 - :open_file_folder: my_template_folder
@@ -95,4 +97,4 @@ To build from python (".py") file into single file executable, follow these step
 
 ## Support
 
-Email support@screensteps.com with any questions.
+Email support@screensteps.com with any questions or bug reports.
