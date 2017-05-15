@@ -1,6 +1,6 @@
-## ScreenSteps Command Line Exporter
+# ScreenSteps Command Line Exporter
 
-This is the source code for the ScreenSteps command line exporter. It is writtne in Python.
+This is the source code for the ScreenSteps command line exporter. It is written in Python.
 
 ## Usage
 
@@ -13,7 +13,9 @@ run -n <account_name> -u <user_id> -p <token_password>
 [-a <article_id>]
 ```
 
-Explanations:
+## Explanations:
+
+```
 -n This is used for the name of your ScreenSteps account (http://<site_name>.screenstepslive.com)
 -u Your user ID
 -p Your API token or password
@@ -22,8 +24,10 @@ Explanations:
 -s If you'd like to only download one site, specify the ID here (optional)
 -m If you'd like to only download one manual, specify the ID here (optional)
 -a If you'd like to only download one article, specify the ID here (optional)
+```
 
-Examples:
+## Examples:
+
 ```
 # Export a manual using a template from a folder name "my_template" folder.
 # Store the output in a folder named "output".
@@ -32,6 +36,17 @@ run -n customerknowledge -u jack -p mypassword -t my_template_folder -o output_f
 # Export a single article
 run -n myaccount -u jill -p apassword -t my_template_folder -o output_folder -s 15226 -a 21234
 ```
+
+## Template structure
+
+You can tell the exporter how to format the output by passing in the path to a template folder using the `-t` option.
+
+- :open_file_folder: articles
+  - @article.html
+- :open_file_folder: images
+  - :open_file_folder: @article
+    - @images
+- @toc.html
 
 ## Installation
 
