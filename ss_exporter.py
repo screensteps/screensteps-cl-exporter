@@ -149,6 +149,12 @@ def read_file(path):
         contents = f.read()
     return contents
 
+def _decode(var):
+    if isinstance(var, unicode):
+        return var
+    else:
+        return str(var)
+
 def main(argv):
     # Define variables we need.
     site_name = '' #n / site_name
@@ -216,7 +222,7 @@ def main(argv):
                 is_article_folder = False
             elif len(at_article_folder) == 1:
                 at_article_folder = at_article_folder[0]
-                print("Info: Template folder has @article folder. "  + str(at_article_folder))
+                print("Info: Template folder has @article folder. "  + _decode(at_article_folder)
                 is_article_folder = True
             else:
                 print("Error: More than one @article folder found.")
@@ -230,7 +236,7 @@ def main(argv):
                 is_image_folder = False
             elif len(at_images_folder) == 1:
                 at_images_folder = find_at_file_path(os.path.dirname(at_images_folder[0]),template_folder)
-                print("Info: Template folder has " + at_images_folder[0] + " file. "  + str(at_images_folder))
+                print("Info: Template folder has " + at_images_folder[0] + " file. "  + _decode(at_images_folder))
                 is_image_folder = True
             else:
                 print("Error: More than one " + image_folder_indicator + " file found.")
@@ -244,7 +250,7 @@ def main(argv):
                 is_attach_folder = False
             elif len(at_attach_folder) == 1:
                 at_attach_folder = find_at_file_path(os.path.dirname(at_attach_folder[0]),template_folder)
-                print("Info: Template folder has " + at_attach_folder[0] + " file. "  + str(at_attach_folder))
+                print("Info: Template folder has " + at_attach_folder[0] + " file. "  + _decode(at_attach_folder))
                 is_attach_folder = True
             else:
                 print("Error: More than one " + attach_folder_indicator + " file found.")
@@ -319,7 +325,7 @@ def main(argv):
             if r.status_code == 200:
                 return r.text
             else:
-                print 'Error connecting to server (' + str(r.status_code) + ')'
+                print 'Error connecting to server (' + _decode(r.status_code) + ')'
                 sys.exit(2)
         except requests.exceptions.RequestException:
             print 'Error connecting to server.'
@@ -332,14 +338,14 @@ def main(argv):
     # grab all sites for that user information
     print("> Pulling sites")
     sites = screensteps('sites') # grab sites
-    print("> " + str(sites))
+    print("> " + _decode(sites))
 
     # loop through sites
     for site in sites['sites']:
-        this_site_id = str(site['id'])
+        this_site_id = _decode(site['id'])
         if (site_id == this_site_id) or (site_id == ''): # only action a site if site_id isn't set, or is a match
             print(">> Processing site: " + site['title'])
-            print(">> " + str(site))
+            print(">> " + _decode(site))
 
             # folder for site - two paths 1) template folder, 2) no template folder
             site_folder = os.path.join(output_folder, this_site_id)
@@ -352,40 +358,40 @@ def main(argv):
 
             # loop through manuals
             for manual in manuals['site']['manuals']:
-                this_manual_id = str(manual['id'])
+                this_manual_id = _decode(manual['id'])
                 if (manual_id == this_manual_id) or (manual_id == ''): # only action a manual if manual isn't set, or is a match
                     print(">>> Processing manual: " + manual['title'])
-                    print(">>> " + str(manual))
+                    print(">>> " + _decode(manual))
 
                     chapters = screensteps('sites/' + this_site_id + '/manuals/' + this_manual_id) # grab chapters
                     chapters_json = screensteps_json('sites/' + this_site_id + '/manuals/' + this_manual_id)
 
-                    # pre-chapter replaces on str(manual_files_ref[path][0])
+                    # pre-chapter replaces on _decode(manual_files_ref[path][0])
                     if is_manual_files: # are there templates?
                         manual_files_temp = {}
                         for path, details in manual_files.iteritems():
                             manual_files_temp[path] = []
-                            manual_files_temp[path].append(str(manual_files_ref[path][0]).replace('{{title}}',chapters['manual']['title']))
+                            manual_files_temp[path].append(_decode(manual_files_ref[path][0]).replace('{{title}}', chapters['manual']['title']))
 
                     # loop through chapters
                     for chapter in chapters['manual']['chapters']:
-                        this_chapter_id = str(chapter['id'])
+                        this_chapter_id = _decode(chapter['id'])
                         print(">>>> Processing chapter: " + chapter['title'])
-                        print(">>>> " + str(chapter))
+                        print(">>>> " + _decode(chapter))
 
-                        # pre-article replaces on str(manual_files_ref[path][1])
+                        # pre-article replaces on _decode(manual_files_ref[path][1])
                         if is_manual_files: # are there templates?
                             for path, details in manual_files.iteritems():
-                                manual_files_temp[path].append(str(manual_files_ref[path][1]).replace('{{title}}',str(chapter['title'])))
+                                manual_files_temp[path].append(_decode(manual_files_ref[path][1]).replace('{{title}}', chapter['title']))
 
                         articles = screensteps('sites/' + this_site_id + '/chapters/' + this_chapter_id) # grab articles
 
                         # loop through articles
                         for article in articles['chapter']['articles']:
-                            this_article_id = str(article['id'])
+                            this_article_id = _decode(article['id'])
                             if (article_id == this_article_id) or (article_id == ''): # only action an article if article_id isn't set, or is a match
                                 print(">>>>> Processing article: " + article['title'])
-                                print(">>>>> " + str(article))
+                                print(">>>>> " + _decode(article))
 
                                 if is_article_folder:
                                     article_folder = os.path.join(site_folder, find_relative_path(at_article_folder,template_folder),this_article_id)
@@ -431,7 +437,7 @@ def main(argv):
 
                                         print(">>>>>> Processing file: " + content_block['url'])
                                         new_file_path = download_file(files_folder,content_block['url'])
-                                        this_articles_files.append([str(content_block['url']), os.path.join(short_files_folder,new_file_path)])
+                                        this_articles_files.append([ _decode(content_block['url']), os.path.join(short_files_folder,new_file_path)])
 
                                 article_files_paths = []
                                 if template_specified:
@@ -453,7 +459,7 @@ def main(argv):
                                         # find and replace all the other handlebars specified
                                         for article_handlebar in article_handlebars:
                                             if article_handlebar != "link":
-                                                temp_towrite = temp_towrite.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
+                                                temp_towrite = temp_towrite.replace(("{{" + _decode(article_handlebar) + "}}"), _decode(this_article['article'][article_handlebar]) )
 
                                         for this_articles_file in this_articles_files:
                                             temp_towrite = temp_towrite.replace(this_articles_file[0],(back_dir + this_articles_file[1]))
@@ -467,12 +473,12 @@ def main(argv):
                                     write_file(article_folder, (this_article_id + '.html'), article_html)
                                     article_files_paths.append((this_article_id + '.html'))
 
-                                # article replaces on str(manual_files_ref[path][2])
+                                # article replaces on _decode(manual_files_ref[path][2])
                                 if is_manual_files: # are there templates?
                                     article_handlebars.append("link")
 
                                     for path, details in manual_files.iteritems():
-                                        article_string = str(manual_files_ref[path][2])
+                                        article_string = _decode(manual_files_ref[path][2])
                                         for article_handlebar in article_handlebars:
                                             if article_handlebar == "link":
                                                 try:
@@ -480,20 +486,20 @@ def main(argv):
                                                 except:
                                                     print("Error: We didn't find a file extension match for the article from the TOC with: " + os.path.splitext(path)[1])
                                                     sys.exit()
-                                                article_string = article_string.replace(("{{" + str(article_handlebar) + "}}"), same_ext_link)
+                                                article_string = article_string.replace(("{{" + _decode(article_handlebar) + "}}"), same_ext_link)
                                             else:
-                                                article_string = article_string.replace(("{{" + str(article_handlebar) + "}}"),str(this_article['article'][article_handlebar]))
+                                                article_string = article_string.replace(("{{" + _decode(article_handlebar) + "}}"),_decode(this_article['article'][article_handlebar]))
                                         manual_files_temp[path].append(article_string)
 
-                        # post-article replaces on str(manual_files_ref[path][3])
+                        # post-article replaces on _decode(manual_files_ref[path][3])
                         if is_manual_files: # are there templates?
                             for path, details in manual_files.iteritems():
-                                manual_files_temp[path].append(str(manual_files_ref[path][3]).replace('{{title}}',str(chapter['title'])))
+                                manual_files_temp[path].append(_decode(manual_files_ref[path][3]).replace('{{title}}',_decode(chapter['title'])))
 
-                    # post-chapter replaces on str(manual_files_ref[path][4])
+                    # post-chapter replaces on _decode(manual_files_ref[path][4])
                     if is_manual_files: # are there templates?
                         for path, details in manual_files.iteritems():
-                            manual_files_temp[path].append(str(manual_files_ref[path][4]).replace('{{title}}',chapters['manual']['title']))
+                            manual_files_temp[path].append(_decode(manual_files_ref[path][4]).replace('{{title}}',chapters['manual']['title']))
 
                             manual_relative_path = find_relative_path(path,template_folder)
                             if manual_relative_path == '':
@@ -507,16 +513,16 @@ def main(argv):
                             temp_file_contents = temp_file_contents.replace("""{{json}}""",(chapters_json).decode("unicode-escape"))
                             write_file(manual_relative_path, temp_filename, temp_file_contents)
 
-        # clean up the "@" files that we copied over for each site
-        if template_specified:
-            try:
-                remove_found_files(find_file(article_file_indicator,site_folder))
-                remove_found_files(find_file(manual_file_indicator,site_folder))
-                remove_found_files(find_file(image_folder_indicator,site_folder))
-                remove_found_files(find_file(attach_folder_indicator,site_folder))
-                remove_directories(find_dirs("@article", site_folder))
-            except:
-                print("We had trouble deleting the copied template files.  You can ignore any extra files.")
+            # clean up the "@" files that we copied over for each site
+            if template_specified:
+                try:
+                    remove_found_files(find_file(article_file_indicator,site_folder))
+                    remove_found_files(find_file(manual_file_indicator,site_folder))
+                    remove_found_files(find_file(image_folder_indicator,site_folder))
+                    remove_found_files(find_file(attach_folder_indicator,site_folder))
+                    remove_directories(find_dirs("@article", site_folder))
+                except:
+                    print("We had trouble deleting the copied template files.  You can ignore any extra files.")
 
 
 if __name__ == "__main__":
