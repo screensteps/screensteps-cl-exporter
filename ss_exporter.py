@@ -13,7 +13,6 @@ article_file_indicator = '@article.*'
 manual_file_indicator = '@toc.*'
 image_folder_indicator = '@images'
 attach_folder_indicator = '@attachments'
-img_formats = [".tif", ".tiff", ".gif", ".jpeg", ".jpg", ".png"]
 
 # these are the handlebars you can use in an article file
 article_handlebars = [
@@ -415,18 +414,7 @@ def main(argv):
 
                                         # what type of file is it?
                                         download_ext = os.path.splitext(urlparse.urlparse(content_block['url']).path)[1]
-                                        if download_ext in img_formats: #image
-                                            if is_image_folder:
-                                                files_folder = os.path.join(site_folder,at_images_folder)
-                                                short_files_folder = at_images_folder
-                                                if '@article' in files_folder:
-                                                    files_folder = files_folder.replace("@article",this_article_id)
-                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
-                                            else:
-                                                files_folder = os.path.join(article_folder, 'images')
-                                                short_files_folder = 'images'
-                                                make_dir(files_folder)
-                                        else: # attachment
+                                        if content_block['type'] == 'AttachmentContent': # attachment
                                             if is_attach_folder:
                                                 files_folder = os.path.join(site_folder,at_attach_folder)
                                                 short_files_folder = at_attach_folder
@@ -437,8 +425,19 @@ def main(argv):
                                                 files_folder = os.path.join(article_folder, 'attachments')
                                                 short_files_folder = 'attachments'
                                                 make_dir(files_folder)
+                                        else: # image
+                                            if is_image_folder:
+                                                files_folder = os.path.join(site_folder,at_images_folder)
+                                                short_files_folder = at_images_folder
+                                                if '@article' in files_folder:
+                                                    files_folder = files_folder.replace("@article",this_article_id)
+                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
+                                            else:
+                                                files_folder = os.path.join(article_folder, 'images')
+                                                short_files_folder = 'images'
+                                                make_dir(files_folder)
 
-                                        print(">>>>>> Processing file: " + content_block['url'])
+                                        print(">>>>>> Processing " + _decode(content_block['type']) + ": " + content_block['url'])
                                         new_file_path = download_file(files_folder,content_block['url'])
                                         this_articles_files.append([ _decode(content_block['url']), os.path.join(short_files_folder,new_file_path)])
 
