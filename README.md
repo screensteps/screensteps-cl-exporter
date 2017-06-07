@@ -5,7 +5,7 @@ This is the source code for the ScreenSteps command line exporter. It is written
 ## Usage
 
 ```
-run -n <account_name> -u <user_id> -p <token_password>
+ss_exporter -n <account_name> -u <user_id> -p <token_password>
 [-t <template_folder>]
 [-o <output_folder>]
 [-s <site_id>]
@@ -31,10 +31,10 @@ run -n <account_name> -u <user_id> -p <token_password>
 ```
 # Export a manual using a template from a folder name "my_template" folder.
 # Store the output in a folder named "output".
-run -n customerknowledge -u jack -p mypassword -t my_template_folder -o output_folder -s 15226 -m 53243
+ss_exporter -n customerknowledge -u jack -p mypassword -t my_template_folder -o output_folder -s 15226 -m 53243
 
 # Export a single article
-run -n myaccount -u jill -p apassword -t my_template_folder -o output_folder -s 15226 -a 21234
+ss_exporter -n myaccount -u jill -p apassword -t my_template_folder -o output_folder -s 15226 -a 21234
 ```
 
 ## Template structure
@@ -60,7 +60,7 @@ Look in the `samples` directory for a working example.
 ## Example template output:
 
 ```
-run -n myaccount -u jack -p apassword -t my_template_folder -o output_folder -s 15226 -a 21234
+ss_exporter -n myaccount -u jack -p apassword -t my_template_folder -o output_folder -s 15226 -a 21234
 ```
 
 - :open_file_folder: output_folder
@@ -89,11 +89,11 @@ run -n myaccount -u jack -p apassword -t my_template_folder -o output_folder -s 
 To build from python (".py") file into single file executable, follow these steps:
 
 1. Ensure the python file runs on your system (and all dependencies are installed), with something like this:
-    `python run.py -n SCREENSTEPS_ACCOUNT_NAME -u USERNAME -p PASSWORD -t my_template_folder -o output_folder -s SITE_ID -a ARTICLE_ID`
+    `python ss_exporter.py -n SCREENSTEPS_ACCOUNT_NAME -u USERNAME -p PASSWORD -t my_template_folder -o output_folder -s SITE_ID -a ARTICLE_ID`
 2. Remove any previous build & dist folders
     `rm -rf build dist`
 3. Build
-    `pyinstaller --onefile run.py`
+    `pyinstaller --onefile ss_exporter.py`
 
 ## Support
 
