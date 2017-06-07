@@ -379,6 +379,8 @@ def main(argv):
                         print(">>>> Processing chapter: " + chapter['title'])
                         print(">>>> " + _decode(chapter))
 
+                        chapter['articles'] = []
+
                         # pre-article replaces on _decode(manual_files_ref[path][1])
                         if is_manual_files: # are there templates?
                             for path, details in manual_files.iteritems():
@@ -402,6 +404,9 @@ def main(argv):
 
                                 this_article_json = screensteps_json('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
                                 this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
+
+                                # Add to list of article ids and titles
+                                chapter["articles"].append( {'id': this_article['article']['id'], 'title': this_article['article']['title']} )
 
                                 article_html = this_article['article']['html_body']
 
