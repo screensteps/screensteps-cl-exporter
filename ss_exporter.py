@@ -457,7 +457,7 @@ def main(argv):
 
                                         # find and replace {{html}}
                                         temp_towrite = temp_html.replace("""{{html}}""",article_html)
-                                        temp_towrite = temp_towrite.replace("""{{json}}""",json.dumps(this_article))
+                                        temp_towrite = temp_towrite.replace("""{{json}}""",json.dumps(this_article, sort_keys=True, indent=2, separators=(',', ': ')))
 
                                         # find and replace all the other handlebars specified
                                         for article_handlebar in article_handlebars:
@@ -513,7 +513,7 @@ def main(argv):
                             # dump files
                             temp_filename = this_manual_id + os.path.splitext(path)[1]
                             temp_file_contents = (''.join(manual_files_temp[path]) + add_end_manual_file)
-                            temp_file_contents = temp_file_contents.replace("""{{json}}""", json.dumps(chapters))
+                            temp_file_contents = temp_file_contents.replace("""{{json}}""", json.dumps(chapters, sort_keys=True, indent=2, separators=(',', ': ')))
                             write_file(manual_relative_path, temp_filename, temp_file_contents)
 
             # clean up the "@" files that we copied over for each site
