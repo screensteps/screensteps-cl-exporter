@@ -364,7 +364,6 @@ def main(argv):
                     print(">>> " + _decode(manual))
 
                     chapters = screensteps('sites/' + this_site_id + '/manuals/' + this_manual_id) # grab chapters
-                    chapters_json = screensteps_json('sites/' + this_site_id + '/manuals/' + this_manual_id)
 
                     # pre-chapter replaces on _decode(manual_files_ref[path][0])
                     if is_manual_files: # are there templates?
@@ -402,7 +401,6 @@ def main(argv):
                                     # write html to a file if no templates
                                     article_folder = site_folder
 
-                                this_article_json = screensteps_json('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
                                 this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
 
                                 # Add to list of article ids and titles
@@ -459,7 +457,7 @@ def main(argv):
 
                                         # find and replace {{html}}
                                         temp_towrite = temp_html.replace("""{{html}}""",article_html)
-                                        temp_towrite = temp_towrite.replace("""{{json}}""",(this_article_json).decode("unicode-escape"))
+                                        temp_towrite = temp_towrite.replace("""{{json}}""",json.dumps(this_article))
 
                                         # find and replace all the other handlebars specified
                                         for article_handlebar in article_handlebars:
@@ -515,7 +513,7 @@ def main(argv):
                             # dump files
                             temp_filename = this_manual_id + os.path.splitext(path)[1]
                             temp_file_contents = (''.join(manual_files_temp[path]) + add_end_manual_file)
-                            temp_file_contents = temp_file_contents.replace("""{{json}}""",(chapters_json).decode("unicode-escape"))
+                            temp_file_contents = temp_file_contents.replace("""{{json}}""", json.dumps(chapters))
                             write_file(manual_relative_path, temp_filename, temp_file_contents)
 
             # clean up the "@" files that we copied over for each site
