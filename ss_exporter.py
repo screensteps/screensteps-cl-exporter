@@ -222,7 +222,7 @@ def main(argv):
                 is_article_folder = False
             elif len(at_article_folder) == 1:
                 at_article_folder = at_article_folder[0]
-                print("Info: Template folder has @article folder. "  + _decode(at_article_folder)
+                print("Info: Template folder has @article folder. "  + _decode(at_article_folder))
                 is_article_folder = True
             else:
                 print("Error: More than one @article folder found.")
