@@ -154,6 +154,15 @@ def _decode(var):
     else:
         return str(var)
 
+def _print(var):
+    if isinstance(var, unicode):
+        if sys.platform == "win32":
+            return var.encode('utf-8')
+        else:
+            return var
+    else:
+        return str(var)
+
 def main(argv):
     # Define variables we need.
     site_name = '' #n / site_name
@@ -235,10 +244,10 @@ def main(argv):
                 is_image_folder = False
             elif len(at_images_folder) == 1:
                 at_images_folder = find_at_file_path(os.path.dirname(at_images_folder[0]),template_folder)
-                print("Info: Template folder has " + at_images_folder[0] + " file. "  + _decode(at_images_folder))
+                print("Info: Template folder has " + at_images_folder[0] + " file. "  + _print(at_images_folder))
                 is_image_folder = True
             else:
-                print("Error: More than one " + image_folder_indicator + " file found.")
+                print("Error: More than one " + _print(image_folder_indicator) + " file found.")
                 sys.exit()
 
             # check if folder has an @attachments folder
@@ -249,7 +258,7 @@ def main(argv):
                 is_attach_folder = False
             elif len(at_attach_folder) == 1:
                 at_attach_folder = find_at_file_path(os.path.dirname(at_attach_folder[0]),template_folder)
-                print("Info: Template folder has " + at_attach_folder[0] + " file. "  + _decode(at_attach_folder))
+                print("Info: Template folder has " + at_attach_folder[0] + " file. "  + _print(at_attach_folder))
                 is_attach_folder = True
             else:
                 print("Error: More than one " + attach_folder_indicator + " file found.")
@@ -337,14 +346,14 @@ def main(argv):
     # grab all sites for that user information
     print("> Pulling sites")
     sites = screensteps('sites') # grab sites
-    print("> " + _decode(sites))
+    print("> " + _print(sites))
 
     # loop through sites
     for site in sites['sites']:
         this_site_id = _decode(site['id'])
         if (site_id == this_site_id) or (site_id == ''): # only action a site if site_id isn't set, or is a match
-            print(">> Processing site: " + site['title'])
-            print(">> " + _decode(site))
+            print(">> Processing site: " + _print(site['title']))
+            print(">> " + _print(site))
 
             # folder for site - two paths 1) template folder, 2) no template folder
             site_folder = os.path.join(output_folder, this_site_id)
@@ -359,8 +368,8 @@ def main(argv):
             for manual in manuals['site']['manuals']:
                 this_manual_id = _decode(manual['id'])
                 if (manual_id == this_manual_id) or (manual_id == ''): # only action a manual if manual isn't set, or is a match
-                    print(">>> Processing manual: " + manual['title'])
-                    print(">>> " + _decode(manual))
+                    print(">>> Processing manual: " + _print(manual['title']))
+                    print(">>> " + _print(manual))
 
                     chapters = screensteps('sites/' + this_site_id + '/manuals/' + this_manual_id) # grab chapters
 
@@ -374,8 +383,8 @@ def main(argv):
                     # loop through chapters
                     for chapter in chapters['manual']['chapters']:
                         this_chapter_id = _decode(chapter['id'])
-                        print(">>>> Processing chapter: " + chapter['title'])
-                        print(">>>> " + _decode(chapter))
+                        print(">>>> Processing chapter: " + _print(chapter['title']))
+                        print(">>>> " + _print(chapter))
 
                         chapter['articles'] = []
 
@@ -390,8 +399,8 @@ def main(argv):
                         for article in articles['chapter']['articles']:
                             this_article_id = _decode(article['id'])
                             if (article_id == this_article_id) or (article_id == ''): # only action an article if article_id isn't set, or is a match
-                                print(">>>>> Processing article: " + article['title'])
-                                print(">>>>> " + _decode(article))
+                                print(">>>>> Processing article: " + _print(article['title']))
+                                print(">>>>> " + _print(article))
 
                                 if is_article_folder:
                                     article_folder = os.path.join(site_folder, find_relative_path(at_article_folder,template_folder),this_article_id)
@@ -437,7 +446,7 @@ def main(argv):
                                                 short_files_folder = 'images'
                                                 make_dir(files_folder)
 
-                                        print(">>>>>> Processing " + _decode(content_block['type']) + ": " + content_block['url'])
+                                        print(">>>>>> Processing " + _print(content_block['type']) + ": " + _print(content_block['url']))
                                         new_file_path = download_file(files_folder,content_block['url'])
                                         this_articles_files.append([ _decode(content_block['url']), os.path.join(short_files_folder,new_file_path)])
 
