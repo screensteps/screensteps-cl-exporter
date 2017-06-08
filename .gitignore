@@ -1,2 +1,5 @@
-*.example
-output/*
+# Don't sync build and dist folders
+build/*
+dist/*
+
+*.spec
