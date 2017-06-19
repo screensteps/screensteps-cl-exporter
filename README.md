@@ -11,6 +11,7 @@ ss_exporter -n <account_name> -u <user_id> -p <token_password>
 [-s <site_id>]
 [-m <manual_id>]
 [-a <article_id>]
+[-M <manual_file_name>]
 ```
 
 ## Explanations:
@@ -24,6 +25,7 @@ ss_exporter -n <account_name> -u <user_id> -p <token_password>
 -s If you'd like to only download one site, specify the ID here (optional)
 -m If you'd like to only download one manual, specify the ID here (optional)
 -a If you'd like to only download one article, specify the ID here (optional)
+-M By default a manual file uses the manual id for the filename. This parameter allows you to specify a specific name for the manual file. Requires that -m be passed in as well.
 ```
 
 ## Examples:
