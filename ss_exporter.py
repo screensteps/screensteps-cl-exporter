@@ -474,6 +474,9 @@ def main(argv):
 
                                         for this_articles_file in this_articles_files:
                                             temp_towrite = temp_towrite.replace(this_articles_file[0],(back_dir + this_articles_file[1]))
+                                            # workaround: perform replace on thumbnail images
+                                            thumbnail_url = this_articles_file[0].replace("/original/", "/medium/")
+                                            temp_towrite = temp_towrite.replace(thumbnail_url,(back_dir + this_articles_file[1]))
 
                                         # write file
                                         write_file(site_folder, temp_filename, temp_towrite)
