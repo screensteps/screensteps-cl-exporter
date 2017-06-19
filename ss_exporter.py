@@ -173,8 +173,9 @@ def main(argv):
     site_id = ''#s / site
     manual_id = ''#m / manual
     article_id = ''#a / article
+    manual_file_name = ''
     try:
-        opts, args = getopt.getopt(argv,"hn:u:p:t:o:s:m:a:",["site_name=","user_id=","password=","template_folder=","output_folder=","site_id=","manual_id=","article_id="])
+        opts, args = getopt.getopt(argv,"hn:u:p:t:o:s:m:a:M:",["site_name=","user_id=","password=","template_folder=","output_folder=","site_id=","manual_id=","article_id=","manual_file_name="])
     except getopt.GetoptError:
         print 'use "run.py -h" for help'
         sys.exit(2)
@@ -198,6 +199,10 @@ def main(argv):
             manual_id = arg
         elif opt in ("-a", "--article_id"):
             article_id = arg
+        elif opt in ("--manual_file_name"):
+            if manual_id != "":
+                manual_file_name = arg
+
 
     # check if required attributes exist
     if (site_name == '') or (user_id == '') or (api_token == ''):
@@ -294,6 +299,7 @@ def main(argv):
                 # read in template data
                 manual_files = {}
                 manual_files_ref = {}
+
                 for each_manual_file in at_manual_file:
                     manual_files[each_manual_file] = read_file(each_manual_file)
 
@@ -522,7 +528,10 @@ def main(argv):
                                 manual_relative_path = os.path.join(site_folder,manual_relative_path)
 
                             # dump files
-                            temp_filename = this_manual_id + os.path.splitext(path)[1]
+                            if manual_file_name != "":
+                                temp_filename = manual_file_name + os.path.splitext(path)[1]
+                            else:
+                                temp_filename = this_manual_id + os.path.splitext(path)[1]
                             temp_file_contents = (''.join(manual_files_temp[path]) + add_end_manual_file)
                             temp_file_contents = temp_file_contents.replace("""{{json}}""", json.dumps(chapters, sort_keys=True, indent=2, separators=(',', ': ')))
                             write_file(manual_relative_path, temp_filename, temp_file_contents)
