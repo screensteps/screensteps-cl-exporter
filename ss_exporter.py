@@ -479,9 +479,11 @@ def main(argv):
                                                 temp_towrite = temp_towrite.replace(("{{" + _decode(article_handlebar) + "}}"), _decode(this_article['article'][article_handlebar]) )
 
                                         for this_articles_file in this_articles_files:
-                                            temp_towrite = temp_towrite.replace(this_articles_file[0],(back_dir + this_articles_file[1]))
+                                            # take off any query params
+                                            image_url = this_articles_file[0].split("?", 1)[0]
+                                            temp_towrite = temp_towrite.replace(image_url,(back_dir + this_articles_file[1]))
                                             # workaround: perform replace on thumbnail images
-                                            thumbnail_url = this_articles_file[0].replace("/original/", "/medium/")
+                                            thumbnail_url = image_url.replace("/original/", "/medium/")
                                             temp_towrite = temp_towrite.replace(thumbnail_url,(back_dir + this_articles_file[1]))
 
                                         # write file
