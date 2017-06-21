@@ -199,7 +199,7 @@ def main(argv):
             manual_id = arg
         elif opt in ("-a", "--article_id"):
             article_id = arg
-        elif opt in ("--manual_file_name"):
+        elif opt in ("-M", "--manual_file_name"):
             if manual_id != "":
                 manual_file_name = arg
 
