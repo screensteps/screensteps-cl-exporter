@@ -481,17 +481,17 @@ def main(argv):
                                         for this_articles_file in this_articles_files:
                                             # take off any query params
                                             image_url = this_articles_file[0].split("?", 1)[0]
-                                            temp_towrite = temp_towrite.replace(image_url,(back_dir + this_articles_file[1]))
+                                            temp_towrite = temp_towrite.replace(image_url,(back_dir + this_articles_file[1].replace("\\", "/"))) # Fix windows paths
                                             # workaround: perform replace on thumbnail images
                                             thumbnail_url = image_url.replace("/original/", "/medium/")
-                                            temp_towrite = temp_towrite.replace(thumbnail_url,(back_dir + this_articles_file[1]))
+                                            temp_towrite = temp_towrite.replace(thumbnail_url,(back_dir + this_articles_file[1].replace("\\", "/"))) # Fix windows paths
 
                                         # write file
                                         write_file(site_folder, temp_filename, temp_towrite)
                                         article_files_paths.append(temp_filename)
                                 else:
                                     for this_articles_file in this_articles_files:
-                                        article_html = article_html.replace(this_articles_file[0],this_articles_file[1])
+                                        article_html = article_html.replace(this_articles_file[0],this_articles_file[1].replace("\\", "/")) # Fix windows paths
                                     write_file(article_folder, (this_article_id + '.html'), article_html)
                                     article_files_paths.append((this_article_id + '.html'))
 
