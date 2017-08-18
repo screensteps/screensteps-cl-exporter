@@ -92,6 +92,7 @@ To build from python (".py") file into single file executable, follow these step
 
 1. Ensure the python file runs on your system (and all dependencies are installed), with something like this:
     `python ss_exporter.py -n SCREENSTEPS_ACCOUNT_NAME -u USERNAME -p PASSWORD -t my_template_folder -o output_folder -s SITE_ID -a ARTICLE_ID`
+    You may need to install the `requests` module. For information on installing modules please visit https://packaging.python.org/tutorials/installing-packages/
 2. Remove any previous build & dist folders
     `rm -rf build dist`
 3. Build
