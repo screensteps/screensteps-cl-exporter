@@ -159,7 +159,11 @@ def _print(var):
         if sys.platform == "win32":
             return var.encode('utf-8')
         else:
-            return var
+            # pyinstaller needs the encoding changed. Running script does not.
+            if getattr( sys, 'frozen', False ):
+                return var.encode('utf-8')
+            else:
+                return var
     else:
         return str(var)
 
