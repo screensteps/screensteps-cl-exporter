@@ -12,6 +12,7 @@ ss_exporter -n <account_name> -u <user_id> -p <token_password>
 [-m <manual_id>]
 [-a <article_id>]
 [-M <manual_file_name>]
+[-i object_identifier]
 ```
 
 ## Explanations:
@@ -26,6 +27,7 @@ ss_exporter -n <account_name> -u <user_id> -p <token_password>
 -m If you'd like to only download one manual, specify the ID here (optional)
 -a If you'd like to only download one article, specify the ID here (optional)
 -M By default a manual file uses the manual id for the filename. This parameter allows you to specify a specific name for the manual file. Requires that -m be passed in as well.
+-i Specifies how the site, manual, and article files should be named. By default the "id" from ScreenSteps is used. You can set this to "title" or "title_id". "name_id" will use the name with " [ID]" appended to the end.
 ```
 
 ## Examples:
@@ -37,6 +39,9 @@ ss_exporter -n customerknowledge -u jack -p mypassword -t my_template_folder -o 
 
 # Export a single article
 ss_exporter -n myaccount -u jill -p apassword -t my_template_folder -o output_folder -s 15226 -a 21234
+
+# Export a single article and name the file using the article title
+ss_exporter -n myaccount -u jill -p apassword -t my_template_folder -o output_folder -s 15226 -a 21234 -i title
 ```
 
 ## Template structure
@@ -45,9 +50,10 @@ You can tell the exporter how to format the output by passing in the path to a t
 
 - `@toc.html` or `@toc.json`: This file will be replaced with the manual table of contents. The `@toc` portion of the file name will be replaced with the numerical id of the manual on the ScreenSteps server. The file suffix determines if HTML or JSON content will be inserted into the file.
 - `@article.html` or `@article.json` file: The folder where either of these files resides determines where articles will be placed. The `@article` portion of the file name will be replaced with the numerical id of the article on the ScreenSteps server. The file suffix determines if HTML or JSON content will be inserted into the file.
-- `@images`: Files used in articles will be placed in the directory where this file is located. If the `@images` file is in a folder named `@article` then a different folder will be created for each article. The folder will be named using the numerical id of the article on the ScreenSteps server and the images for the article will be placed inside.
+- `@images`: Files used in articles will be placed in the directory where this file is located. If the `@images` file is in a folder named `@article` then a different folder will be created for each article. The folder will be named using the naming format specified by the `-i` parameter and the images for the article will be placed inside.
+- `@attachments`: Behaves the same as the `@images` file but specifies where attachments will be stored. This can be in the same directory as the `@images` folder.
 
-Look in the `samples` directory for a working example.
+Look in the `samples` directory for working examples.
 
 ### Example template:
 
@@ -57,6 +63,7 @@ Look in the `samples` directory for a working example.
   - :open_file_folder: images
     - :open_file_folder: @article
       - @images
+      - @attachments
   - @toc.html
 
 ## Example template output:

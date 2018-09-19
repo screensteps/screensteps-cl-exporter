@@ -42,6 +42,8 @@ def print_help():
     [-s <site_id>]
     [-m <manual_id>]
     [-a <article_id>]
+    [-M <manual_file_name]
+    [-i object_identifier]
 
     Explanations:
     -n This is used for the name of the site (http://<site_name>.screenstepslive.com)
@@ -52,6 +54,8 @@ def print_help():
     -s If you'd like to only download one site, specify the ID here (optional)
     -m If you'd like to only download one manual, specify the ID here (optional)
     -a If you'd like to only download one article, specify the ID here (optional)
+    -M Pass in a specific name to use for the manual file. Must pass in the -m parameter.
+    -i Specifies how the site, manual, and article files should be named. By default the "id" from ScreenSteps is used. You can set this to "title" or "title_id". "title_id" will use the name with " [ID]" appended to the end.
 
     Examples:
     run -n customerknowledge -u mikey -p mypassword -s 15226
@@ -154,6 +158,9 @@ def _decode(var):
     else:
         return str(var)
 
+def prepare_for_filename(string):
+        return "".join([c for c in string if c.isalpha() or c.isdigit() or c==' ']).rstrip()
+
 def _print(var):
     if isinstance(var, unicode):
         if sys.platform == "win32":
@@ -177,9 +184,10 @@ def main(argv):
     site_id = ''#s / site
     manual_id = ''#m / manual
     article_id = ''#a / article
-    manual_file_name = ''
+    manual_file_name = ''#M / manual_file_name
+    object_identifier = 'id'#i / object_identifier
     try:
-        opts, args = getopt.getopt(argv,"hn:u:p:t:o:s:m:a:M:",["site_name=","user_id=","password=","template_folder=","output_folder=","site_id=","manual_id=","article_id=","manual_file_name="])
+        opts, args = getopt.getopt(argv,"hn:u:p:t:o:s:m:a:M:i:",["site_name=","user_id=","password=","template_folder=","output_folder=","site_id=","manual_id=","article_id=","manual_file_name=","object_identifier="])
     except getopt.GetoptError:
         print 'use "run.py -h" for help'
         sys.exit(2)
@@ -206,6 +214,8 @@ def main(argv):
         elif opt in ("-M", "--manual_file_name"):
             if manual_id != "":
                 manual_file_name = arg
+        elif opt in ("-i", "--object_identifier"):
+            object_identifier = arg
 
 
     # check if required attributes exist
@@ -363,10 +373,16 @@ def main(argv):
         this_site_id = _decode(site['id'])
         if (site_id == this_site_id) or (site_id == ''): # only action a site if site_id isn't set, or is a match
             print(">> Processing site: " + _print(site['title']))
-            print(">> " + _print(site))
+            # print(">> " + _print(site))
 
             # folder for site - two paths 1) template folder, 2) no template folder
-            site_folder = os.path.join(output_folder, this_site_id)
+            if object_identifier == "title_id":
+                site_folder = os.path.join(output_folder, prepare_for_filename(site['title']) + " [" + this_site_id + "]")
+            elif object_identifier == "title":
+                site_folder = os.path.join(output_folder, prepare_for_filename(site['title']))
+            else:
+                site_folder = os.path.join(output_folder, this_site_id)
+
             if template_specified:
                 copy_and_overwrite(template_folder, site_folder)
             else:
@@ -379,7 +395,14 @@ def main(argv):
                 this_manual_id = _decode(manual['id'])
                 if (manual_id == this_manual_id) or (manual_id == ''): # only action a manual if manual isn't set, or is a match
                     print(">>> Processing manual: " + _print(manual['title']))
-                    print(">>> " + _print(manual))
+                    # print(">>> " + _print(manual))
+
+                    if object_identifier == "title_id":
+                        this_manual_identifier = prepare_for_filename(manual["title"]) + " [" + this_manual_id + "]"
+                    elif object_identifier == "title":
+                        this_manual_identifier = prepare_for_filename(manual["title"])
+                    else:
+                        this_manual_identifier = this_manual_id
 
                     chapters = screensteps('sites/' + this_site_id + '/manuals/' + this_manual_id) # grab chapters
 
@@ -394,7 +417,7 @@ def main(argv):
                     for chapter in chapters['manual']['chapters']:
                         this_chapter_id = _decode(chapter['id'])
                         print(">>>> Processing chapter: " + _print(chapter['title']))
-                        print(">>>> " + _print(chapter))
+                        # print(">>>> " + _print(chapter))
 
                         chapter['articles'] = []
 
@@ -410,19 +433,28 @@ def main(argv):
                             this_article_id = _decode(article['id'])
                             if (article_id == this_article_id) or (article_id == ''): # only action an article if article_id isn't set, or is a match
                                 print(">>>>> Processing article: " + _print(article['title']))
-                                print(">>>>> " + _print(article))
+                                # print(">>>>> " + _print(article))
+
+                                this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
+
+                                this_article_title = this_article['article']['title']
+
+                                if object_identifier == "title_id":
+                                    this_article_identifier = prepare_for_filename(this_article_title) + " [" + this_article_id + "]"
+                                elif object_identifier == "title":
+                                    this_article_identifier = prepare_for_filename(this_article_title)
+                                else:
+                                    this_article_identifier = this_article_id
 
                                 if is_article_folder:
-                                    article_folder = os.path.join(site_folder, find_relative_path(at_article_folder,template_folder),this_article_id)
+                                    article_folder = os.path.join(site_folder, find_relative_path(at_article_folder,template_folder), this_article_identifier)
                                     copy_and_overwrite(at_article_folder, article_folder)
                                 else:
                                     # write html to a file if no templates
                                     article_folder = site_folder
 
-                                this_article = screensteps('sites/' + this_site_id + '/articles/' + this_article_id) # grab ind article
-
                                 # Add to list of article ids and titles
-                                chapter["articles"].append( {'id': this_article['article']['id'], 'title': this_article['article']['title']} )
+                                chapter["articles"].append( {'id': this_article['article']['id'], 'title': this_article_identifier} )
 
                                 article_html = this_article['article']['html_body']
 
@@ -438,8 +470,8 @@ def main(argv):
                                                 files_folder = os.path.join(site_folder,at_attach_folder)
                                                 short_files_folder = at_attach_folder
                                                 if '@article' in files_folder:
-                                                    files_folder = files_folder.replace("@article",this_article_id)
-                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
+                                                    files_folder = files_folder.replace("@article", this_article_identifier)
+                                                    short_files_folder = short_files_folder.replace("@article", this_article_identifier)
                                             else:
                                                 files_folder = os.path.join(article_folder, 'attachments')
                                                 short_files_folder = 'attachments'
@@ -449,8 +481,8 @@ def main(argv):
                                                 files_folder = os.path.join(site_folder,at_images_folder)
                                                 short_files_folder = at_images_folder
                                                 if '@article' in files_folder:
-                                                    files_folder = files_folder.replace("@article",this_article_id)
-                                                    short_files_folder = short_files_folder.replace("@article",this_article_id)
+                                                    files_folder = files_folder.replace("@article", this_article_identifier)
+                                                    short_files_folder = short_files_folder.replace("@article", this_article_identifier)
                                             else:
                                                 files_folder = os.path.join(article_folder, 'images')
                                                 short_files_folder = 'images'
@@ -467,9 +499,9 @@ def main(argv):
 
                                         back_dir = ''
                                         article_relative_path = find_relative_path(path,template_folder)
-                                        temp_filename = this_article_id + os.path.splitext(path)[1]
+                                        temp_filename = this_article_identifier + os.path.splitext(path)[1]
                                         if article_relative_path != '':
-                                            article_relative_path = article_relative_path.replace("@article",this_article_id)
+                                            article_relative_path = article_relative_path.replace("@article", this_article_identifier)
                                             temp_filename = os.path.join(article_relative_path,temp_filename)
                                             back_dir = '../' * len(split_path(article_relative_path))
 
@@ -496,8 +528,8 @@ def main(argv):
                                 else:
                                     for this_articles_file in this_articles_files:
                                         article_html = article_html.replace(this_articles_file[0],this_articles_file[1].replace("\\", "/")) # Fix windows paths
-                                    write_file(article_folder, (this_article_id + '.html'), article_html)
-                                    article_files_paths.append((this_article_id + '.html'))
+                                    write_file(article_folder, (this_article_identifier + '.html'), article_html)
+                                    article_files_paths.append((this_article_identifier + '.html'))
 
                                 # article replaces on _decode(manual_files_ref[path][2])
                                 if is_manual_files: # are there templates?
@@ -537,7 +569,7 @@ def main(argv):
                             if manual_file_name != "":
                                 temp_filename = manual_file_name + os.path.splitext(path)[1]
                             else:
-                                temp_filename = this_manual_id + os.path.splitext(path)[1]
+                                temp_filename = this_manual_identifier + os.path.splitext(path)[1]
                             temp_file_contents = (''.join(manual_files_temp[path]) + add_end_manual_file)
                             temp_file_contents = temp_file_contents.replace("""{{json}}""", json.dumps(chapters, sort_keys=True, indent=2, separators=(',', ': ')))
                             write_file(manual_relative_path, temp_filename, temp_file_contents)
