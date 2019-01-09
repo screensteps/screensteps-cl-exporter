@@ -36,7 +36,7 @@ article_handlebars = [
 def print_help():
     print """
     Usage:
-    run -n <site_name> -u <user_id> -p <token_password>
+    run -n <account_name> -u <user_id> -p <token_password>
     [-t <template_folder>]
     [-o <output_folder>]
     [-s <site_id>]
@@ -46,7 +46,7 @@ def print_help():
     [-i object_identifier]
 
     Explanations:
-    -n This is used for the name of the site (http://<site_name>.screenstepslive.com)
+    -n This is used for the name of the account (http://<account_name>.screenstepslive.com)
     -u Your user ID
     -p Your API token or password
     -t The folder with your templates (optional)
