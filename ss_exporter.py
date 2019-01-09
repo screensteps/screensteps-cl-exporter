@@ -355,8 +355,8 @@ def main(argv):
             else:
                 print 'Error connecting to server (' + _decode(r.status_code) + ')'
                 sys.exit(2)
-        except requests.exceptions.RequestException:
-            print 'Error connecting to server.'
+        except requests.exceptions.RequestException as e:
+            print("Error connecting to server:", e)
             sys.exit(2)
 
     def screensteps(endpoint):
