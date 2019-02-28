@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import ssl
 import sys, getopt
 import requests
 import json
