@@ -1,6 +1,6 @@
 # ScreenSteps Command Line Exporter
 
-This is the source code for the ScreenSteps command line exporter. It is written in Python.
+This is the source code for the ScreenSteps command line exporter. It is written in Python and supports Python 2.
 
 ## Usage
 
