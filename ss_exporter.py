@@ -462,7 +462,7 @@ def main(argv):
                                 # loop through attached files
                                 this_articles_files = []
                                 for content_block in this_article['article']['content_blocks']:
-                                    if content_block['url'] is not None:
+                                    if 'url' in content_block:
 
                                         # what type of file is it?
                                         download_ext = os.path.splitext(urlparse.urlparse(content_block['url']).path)[1]
