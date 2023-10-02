@@ -161,14 +161,7 @@ def prepare_for_filename(string):
         return "".join([c for c in string if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
 def _print(var):
-    if sys.platform == "win32":
-        return var.encode('utf-8')
-    else:
-        # pyinstaller needs the encoding changed. Running script does not.
-        if getattr( sys, 'frozen', False ):
-            return var.encode('utf-8')
-        else:
-            return var
+    return var
 
 def main(argv):
     # Define variables we need.
