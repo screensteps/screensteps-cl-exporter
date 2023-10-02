@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import ssl
 import sys, getopt
@@ -7,7 +7,7 @@ import json
 import os, fnmatch
 import re
 import shutil
-import urlparse
+from urllib.parse import urlparse
 
 # globals
 article_file_indicator = '@article.*'
@@ -35,7 +35,7 @@ article_handlebars = [
 
 # Define the help message here.
 def print_help():
-    print """
+    print("""
     Usage:
     run -n <account_name> -u <user_id> -p <token_password>
     [-t <template_folder>]
@@ -61,7 +61,7 @@ def print_help():
     Examples:
     run -n customerknowledge -u mikey -p mypassword -s 15226
     run -n myaccount -u johnsmith -p notAgoodPassword -a 21234
-    """
+    """)
 
 def make_dir(directory):
     if not os.path.exists(directory):
@@ -140,7 +140,7 @@ def remove_found_files(files):
             os.remove(name)
 
 def write_file(directory, name, rawtext):
-    with open(os.path.join(directory, name), 'w+') as f:
+    with open(os.path.join(directory, name), 'wb+') as f:
         f.write(rawtext.encode('utf-8'))
 
 def copy_and_overwrite(from_path, to_path):
@@ -154,26 +154,14 @@ def read_file(path):
     return contents
 
 def _decode(var):
-    if isinstance(var, unicode):
-        return var
-    else:
-        return str(var)
+    # all strings are unicode now
+    return str(var)
 
 def prepare_for_filename(string):
         return "".join([c for c in string if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
 def _print(var):
-    if isinstance(var, unicode):
-        if sys.platform == "win32":
-            return var.encode('utf-8')
-        else:
-            # pyinstaller needs the encoding changed. Running script does not.
-            if getattr( sys, 'frozen', False ):
-                return var.encode('utf-8')
-            else:
-                return var
-    else:
-        return str(var)
+    return var
 
 def main(argv):
     # Define variables we need.
@@ -190,7 +178,7 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hn:u:p:t:o:s:m:a:M:i:",["site_name=","user_id=","password=","template_folder=","output_folder=","site_id=","manual_id=","article_id=","manual_file_name=","object_identifier="])
     except getopt.GetoptError:
-        print 'use "run.py -h" for help'
+        print('use "run.py -h" for help')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -264,7 +252,7 @@ def main(argv):
                 is_image_folder = False
             elif len(at_images_folder) == 1:
                 at_images_folder = find_at_file_path(os.path.dirname(at_images_folder[0]),template_folder)
-                print("Info: Template folder has " + at_images_folder[0] + " file. "  + _print(at_images_folder))
+                print("Info: Template folder has " + image_folder_indicator + " file. "  + _print(at_images_folder))
                 is_image_folder = True
             else:
                 print("Error: More than one " + _print(image_folder_indicator) + " file found.")
@@ -278,7 +266,7 @@ def main(argv):
                 is_attach_folder = False
             elif len(at_attach_folder) == 1:
                 at_attach_folder = find_at_file_path(os.path.dirname(at_attach_folder[0]),template_folder)
-                print("Info: Template folder has " + at_attach_folder[0] + " file. "  + _print(at_attach_folder))
+                print("Info: Template folder has " + attach_folder_indicator + " file. "  + _print(at_attach_folder))
                 is_attach_folder = True
             else:
                 print("Error: More than one " + attach_folder_indicator + " file found.")
@@ -354,7 +342,7 @@ def main(argv):
             if r.status_code == 200:
                 return r.text
             else:
-                print 'Error connecting to server (' + _decode(r.status_code) + ')'
+                print('Error connecting to server (' + _decode(r.status_code) + ')')
                 sys.exit(2)
         except requests.exceptions.RequestException as e:
             print("Error connecting to server:", e)
@@ -367,7 +355,7 @@ def main(argv):
     # grab all sites for that user information
     print("> Pulling sites")
     sites = screensteps('sites') # grab sites
-    print("> " + _print(sites))
+    print("> " + _print(str(sites)))
 
     # loop through sites
     for site in sites['sites']:
@@ -410,7 +398,7 @@ def main(argv):
                     # pre-chapter replaces on _decode(manual_files_ref[path][0])
                     if is_manual_files: # are there templates?
                         manual_files_temp = {}
-                        for path, details in manual_files.iteritems():
+                        for path, details in manual_files.items():
                             manual_files_temp[path] = []
                             manual_files_temp[path].append(_decode(manual_files_ref[path][0]).replace('{{title}}', chapters['manual']['title']))
 
@@ -424,7 +412,7 @@ def main(argv):
 
                         # pre-article replaces on _decode(manual_files_ref[path][1])
                         if is_manual_files: # are there templates?
-                            for path, details in manual_files.iteritems():
+                            for path, details in manual_files.items():
                                 manual_files_temp[path].append(_decode(manual_files_ref[path][1]).replace('{{title}}', chapter['title']))
 
                         articles = screensteps('sites/' + this_site_id + '/chapters/' + this_chapter_id) # grab articles
@@ -465,7 +453,7 @@ def main(argv):
                                     if 'url' in content_block:
 
                                         # what type of file is it?
-                                        download_ext = os.path.splitext(urlparse.urlparse(content_block['url']).path)[1]
+                                        download_ext = os.path.splitext(urlparse(content_block['url']).path)[1]
                                         if content_block['type'] == 'AttachmentContent': # attachment
                                             if is_attach_folder:
                                                 files_folder = os.path.join(site_folder,at_attach_folder)
@@ -496,7 +484,7 @@ def main(argv):
                                 article_files_paths = []
                                 if template_specified:
                                     # step through each file that starts with "@article"
-                                    for path, temp_html in article_files.iteritems():
+                                    for path, temp_html in article_files.items():
 
                                         back_dir = ''
                                         article_relative_path = find_relative_path(path,template_folder)
@@ -536,7 +524,7 @@ def main(argv):
                                 if is_manual_files: # are there templates?
                                     article_handlebars.append("link")
 
-                                    for path, details in manual_files.iteritems():
+                                    for path, details in manual_files.items():
                                         article_string = _decode(manual_files_ref[path][2])
                                         for article_handlebar in article_handlebars:
                                             if article_handlebar == "link":
@@ -552,12 +540,12 @@ def main(argv):
 
                         # post-article replaces on _decode(manual_files_ref[path][3])
                         if is_manual_files: # are there templates?
-                            for path, details in manual_files.iteritems():
+                            for path, details in manual_files.items():
                                 manual_files_temp[path].append(_decode(manual_files_ref[path][3]).replace('{{title}}',_decode(chapter['title'])))
 
                     # post-chapter replaces on _decode(manual_files_ref[path][4])
                     if is_manual_files: # are there templates?
-                        for path, details in manual_files.iteritems():
+                        for path, details in manual_files.items():
                             manual_files_temp[path].append(_decode(manual_files_ref[path][4]).replace('{{title}}',chapters['manual']['title']))
 
                             manual_relative_path = find_relative_path(path,template_folder)
