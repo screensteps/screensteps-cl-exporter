@@ -252,7 +252,7 @@ def main(argv):
                 is_image_folder = False
             elif len(at_images_folder) == 1:
                 at_images_folder = find_at_file_path(os.path.dirname(at_images_folder[0]),template_folder)
-                print("Info: Template folder has " + at_images_folder[0] + " file. "  + _print(at_images_folder))
+                print("Info: Template folder has " + image_folder_indicator + " file. "  + _print(at_images_folder))
                 is_image_folder = True
             else:
                 print("Error: More than one " + _print(image_folder_indicator) + " file found.")
@@ -266,7 +266,7 @@ def main(argv):
                 is_attach_folder = False
             elif len(at_attach_folder) == 1:
                 at_attach_folder = find_at_file_path(os.path.dirname(at_attach_folder[0]),template_folder)
-                print("Info: Template folder has " + at_attach_folder[0] + " file. "  + _print(at_attach_folder))
+                print("Info: Template folder has " + attach_folder_indicator + " file. "  + _print(at_attach_folder))
                 is_attach_folder = True
             else:
                 print("Error: More than one " + attach_folder_indicator + " file found.")
