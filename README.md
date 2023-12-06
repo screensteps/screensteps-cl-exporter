@@ -20,7 +20,7 @@ ss_exporter -n <account_name> -u <user_id> -p <token_password>
 ```
 -n This is used for the name of your ScreenSteps account (http://<site_name>.screenstepslive.com)
 -u Your user ID
--p Your API token or password
+-p Your API token or password. API Tokens must have the "Full Access" permission.
 -t The folder with your templates (optional)
 -o The folder you would like with outputs (optional)
 -s If you'd like to only download one site, specify the ID here (optional)
