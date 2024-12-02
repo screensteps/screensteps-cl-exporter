@@ -3,6 +3,7 @@
 import ssl
 import sys, getopt
 import requests
+import time
 import json
 import os, fnmatch
 import re
@@ -338,12 +339,25 @@ def main(argv):
         base_url = 'https://' + site_name + '.screenstepslive.com/api/v2/'
         site_endpoint = base_url + endpoint
         try:
-            r = requests.get(site_endpoint, auth=(user_id, api_token))
-            if r.status_code == 200:
-                return r.text
-            else:
-                print('Error connecting to server (' + _decode(r.status_code) + ')')
-                sys.exit(2)
+            while True:
+                r = requests.get(site_endpoint, auth=(user_id, api_token))
+
+                if r.status_code == 200:
+                    return r.text
+                elif r.status_code == 429:
+                    # Rate limit exceeded
+                    try:
+                        retry_info = r.json()
+                        retry_in = retry_info.get('retry_in', 60)  # Default to 60 seconds if not provided
+                        print(f"Rate limit exceeded. Retrying in {retry_in} seconds...")
+                        time.sleep(retry_in)
+                    except ValueError:
+                        # Failed to parse JSON, fall back to a default wait time
+                        print("Rate limit exceeded. Retrying in 60 seconds (default)...")
+                        time.sleep(60)
+                else:
+                    print('Error connecting to server (' + _decode(r.status_code) + ')')
+                    sys.exit(2)
         except requests.exceptions.RequestException as e:
             print("Error connecting to server:", e)
             sys.exit(2)
